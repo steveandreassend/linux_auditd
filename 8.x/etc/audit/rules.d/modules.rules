@@ -1,0 +1,4 @@
+-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
+-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
+-a always,exit -F arch=b32 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
+-a always,exit -F arch=b64 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
