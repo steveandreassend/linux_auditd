@@ -1,0 +1,10 @@
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b32 -S fremovexattr -S fsetxattr -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b64 -S fremovexattr -S fsetxattr -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
+-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
