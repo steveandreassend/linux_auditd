@@ -1,0 +1,2 @@
+-a always,exit -F arch=b32 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
+-a always,exit -F arch=b64 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
