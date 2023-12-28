@@ -1,3 +1,9 @@
-actions.rules
+# Record requests for write or file attribute change access to /etc/sudoers
 -w /etc/sudoers -p wa -k actions
+
+# Record requests for write or file attribute change access to /etc/sudoers.d
 -w /etc/sudoers.d/ -p wa -k actions
+
+## CIS 10.2.5.b All elevation of privileges is logged
+-a always,exit -F arch=b64 -S execve -C auid!=euid -F euid=0 -F key=10.2.5.b-elevated-privs-setuid
+-a always,exit -F arch=b32 -S execve -C auid!=euid -F euid=0 -F key=10.2.5.b-elevated-privs-setuid
