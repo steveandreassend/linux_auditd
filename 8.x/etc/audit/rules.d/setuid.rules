@@ -1,2 +1,3 @@
+# CIS 10.2.5.b All elevation of privileges is logged
 -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=setuid
 -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=setuid
