@@ -24,9 +24,9 @@ Remember, changes made to the audit rules won't take effect until you reload the
 2. Load the rules into the audit system:
 
    Once you've consolidated the rules into `audit.rules`, you need to load them into the kernel using the `auditctl` command.
-
+```bash
    # auditctl -R /etc/audit/audit.rules
-
+```
    This command loads the rules from the `audit.rules` file into the running audit system.
 
 Configure Log Rotation
