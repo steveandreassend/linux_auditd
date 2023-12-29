@@ -16,9 +16,9 @@ Remember, changes made to the audit rules won't take effect until you reload the
 1. Concatenate the rules from files in `/etc/audit/rules.d`:
    
    You can use the `cat` command to concatenate the rules from all the files within `/etc/audit/rules.d` into a single file.
-
+```bash
    # cat /etc/audit/rules.d/*.rules > /etc/audit/audit.rules
-
+```
    This command reads all files with a `.rules` extension in `/etc/audit/rules.d` and appends their contents to the `audit.rules` file in `/etc/audit`.
 
 2. Load the rules into the audit system:
