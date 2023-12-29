@@ -32,6 +32,13 @@ Remember, changes made to the audit rules won't take effect until you reload the
 Configure Log Rotation
 ======================
 
+To configure the Linux auditd service to rotate its logs on a daily basis, keeping only the latest 31 files (as per num_logs setting in auditd.conf):
+
+```bash
+sudo cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
+sudo chmod -v +x /etc/cron.daily/auditd.cron
+```
+
 Configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight.
 
 ```bash
@@ -49,10 +56,3 @@ In the example above, the intent is to keep 30 days of Audit logging, hence it w
   30 days of archive + 1 log referring to the current day.
 
 The duration of online log retention will be mandated by your enterprise's CISO. Logs are typically archived to a SIEM service where they are processed, rather than on the host.
-
-To schedule the Linux auditd service to rotate its logs on a daily basis, keeping only the latest 31 files (as per num_logs configuration in auditd.conf):
-
-```bash
-sudo cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
-sudo chmod -v +x /etc/cron.daily/auditd.cron
-```
