@@ -55,3 +55,8 @@
 
 # /var/log/wtmp - The wtmp file records all logins and logouts.
 -w /var/log/wtmp -p wa -k logout
+
+# Verification:
+# To view the events related to logout that are being audited, you can use the ausearch or ausearch command in combination
+# with grep to filter for the events related to the key "logout":
+#  ausearch -k logout | grep "msg=audit(.*): key=logout"
