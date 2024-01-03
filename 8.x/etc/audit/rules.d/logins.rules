@@ -1,3 +1,12 @@
+## STIG (GEN002720-GEN002840: CAT II) (Previously – G100-G106) The SA will
+## configure the auditing system to audit the following events for all
+## users and root:
+##
+## - Logon (unsuccessful and successful) and logout (successful)
+##
+## Handled by pam, sshd, login, and gdm
+## Might also want to watch these files if needing extra information
+
 # These rules are configured to monitor changes (write and attribute modifications) made to the
 # /var/log/lastlog and /var/log/faillock files and tag these events with the audit key "logins."
 
@@ -5,6 +14,11 @@
 # /var/log/lastlog typically stores information about the last login times of users.
 # /var/log/faillock often contains records of failed login attempts and information about user accounts
 # being locked due to multiple failed login attempts.
+
+# By using these rules, the administrator can track any modifications or changes made to these files related to login activities.
+# For instance, if someone tries to tamper with the last login information (`lastlog`) or the records of failed login attempts
+# (faillock), it will generate audit events tagged with the key "logins," allowing the system administrator to monitor and
+# review these activities using auditd tools.
 
 -w /var/log/lastlog -p wa -k logins
 
@@ -21,9 +35,23 @@
 # -p wa: As before, it sets permissions to watch for write access and attribute modification.
 # -k logins: It uses the same audit key ("logins") to associate events with login-related activities.
 
-# By using these rules, the administrator can track any modifications or changes made to these files related to login activities.
-# For instance, if someone tries to tamper with the last login information (`lastlog`) or the records of failed login attempts
-# (faillock), it will generate audit events tagged with the key "logins," allowing the system administrator to monitor and
-# review these activities using auditd tools.
+-w /var/log/tallylog -p wa -k logins
 
-# Note: These rules do not record logout events
+# /var/log/tallylog keeps track of login failure records or counts. It's related to the system's mechanism for managing login
+# attempts and can be associated with tools or services like pam_tally2.
+
+# This file stores information about failed login attempts for various user accounts on the system. Each time a user fails to log
+# in (due to incorrect credentials, for example), the count associated with that user increases in the tallylog file. This mechanism
+# is often used to enforce security policies, such as locking user accounts after a certain number of failed login attempts to
+# prevent unauthorized access.
+
+# Note: These rules above do not record logout events
+
+# Monitor utmp and wtmp files for logout events. However, note that utmp and wtmp files contain various types of records for
+# user sessions and system events, so filtering for logout events specifically can be a bit tricky.
+
+# /var/log/utmp - The utmp file allows one to discover information about who is currently using the system.
+-w /var/run/utmp -p wa -k logout
+
+# /var/log/wtmp - The wtmp file records all logins and logouts.
+-w /var/log/wtmp -p wa -k logout
