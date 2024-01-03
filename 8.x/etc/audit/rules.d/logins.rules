@@ -45,6 +45,11 @@
 # is often used to enforce security policies, such as locking user accounts after a certain number of failed login attempts to
 # prevent unauthorized access.
 
+# Verification:
+# To view the events related to logout that are being audited, you can use the ausearch or ausearch command in combination
+# with grep to filter for the events related to the key "logins":
+#  ausearch -k logins | grep "msg=audit(.*): key=logins"
+
 # Note: These rules above do not record logout events
 
 # Monitor utmp and wtmp files for logout events. However, note that utmp and wtmp files contain various types of records for
