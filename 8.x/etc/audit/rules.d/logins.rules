@@ -1,2 +1,29 @@
+# These rules are configured to monitor changes (write and attribute modifications) made to the
+# /var/log/lastlog and /var/log/faillock files and tag these events with the audit key "logins."
+
+# Explanation:
+# /var/log/lastlog typically stores information about the last login times of users.
+# /var/log/faillock often contains records of failed login attempts and information about user accounts
+# being locked due to multiple failed login attempts.
+
 -w /var/log/lastlog -p wa -k logins
+
+# -w /var/log/lastlog: This specifies the file path or object to watch. In this case, it's watching the /var/log/lastlog file.
+# -p wa: This sets the permissions to watch for changes. "w" stands for write access, and "a" stands for attribute modification
+# (e.g., permissions changes).
+# -k logins: This sets a unique audit key ("logins") associated with the rule. The key helps in identifying and filtering audit
+# events related to logins.
+
 -w /var/log/faillock -p wa -k logins
+
+# -w /var/log/faillock -p wa -k logins
+# Similar to the first rule, this line watches the file /var/log/faillock.
+# -p wa: As before, it sets permissions to watch for write access and attribute modification.
+# -k logins: It uses the same audit key ("logins") to associate events with login-related activities.
+
+# By using these rules, the administrator can track any modifications or changes made to these files related to login activities.
+# For instance, if someone tries to tamper with the last login information (`lastlog`) or the records of failed login attempts
+# (faillock), it will generate audit events tagged with the key "logins," allowing the system administrator to monitor and
+# review these activities using auditd tools.
+
+# Note: These rules do not record logout events
