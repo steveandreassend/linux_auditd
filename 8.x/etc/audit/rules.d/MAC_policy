@@ -1,0 +1,6 @@
+# CIS 4.1.6 Ensure events that modify the system's Mandatory Access Controls are collected
+# Monitor SELinux mandatory access controls. The parameters below monitor any write
+# access (potential additional, deletion or modification of files in the directory) or attribute
+# changes to the /etc/selinux/ and /usr/share/selinux/ directories.
+-w /etc/selinux/ -p wa -k MAC-policy
+-w /usr/share/selinux/ -p wa -k MAC-policy
