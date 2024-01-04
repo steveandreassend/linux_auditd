@@ -1,0 +1,11 @@
+# STIG
+# -a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
+# -a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
+
+# CIS 4.1.12 Ensure successful file system mounts are collected
+# Monitor the use of the mount system call. The mount (and umount ) system call controls the
+# mounting and unmounting of file systems. The parameters below configure the system to
+# create an audit record when the mount system call is used by a non-privileged user
+
+-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts
+-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts
