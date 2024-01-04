@@ -1,5 +1,19 @@
--w /etc/group -p wa -k audit_rules_usergroup_modification
--w /etc/gshadow -p wa -k audit_rules_usergroup_modification
--w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
--w /etc/passwd -p wa -k audit_rules_usergroup_modification
--w /etc/shadow -p wa -k audit_rules_usergroup_modification
+# CIS 4.1.4 Ensure events that modify user/group information are collected
+# Record events affecting the group , passwd (user IDs), shadow and gshadow (passwords) or
+# /etc/security/opasswd (old passwords, based on remember parameter in the PAM
+# configuration) files. The parameters in this section will watch the files to see if they have
+# been opened for write or have had attribute changes (e.g. permissions) and tag them with
+# the identifier "identity" in the audit log file.
+# vi /etc/audit/rules.d/50-identity.rules
+-w /etc/group -p wa -k identity
+-w /etc/passwd -p wa -k identity
+-w /etc/gshadow -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/security/opasswd -p wa -k identity
+
+# STIG
+#-w /etc/group -p wa -k audit_rules_usergroup_modification
+#-w /etc/gshadow -p wa -k audit_rules_usergroup_modification
+#-w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
+#-w /etc/passwd -p wa -k audit_rules_usergroup_modification
+#-w /etc/shadow -p wa -k audit_rules_usergroup_modification
