@@ -20,6 +20,8 @@
 # (faillock), it will generate audit events tagged with the key "logins," allowing the system administrator to monitor and
 # review these activities using auditd tools.
 
+# CIS 4.1.7 Ensure login and logout events are collected
+# Monitor login and logout events.
 -w /var/log/lastlog -p wa -k logins
 
 # -w /var/log/lastlog: This specifies the file path or object to watch. In this case, it's watching the /var/log/lastlog file.
@@ -28,9 +30,12 @@
 # -k logins: This sets a unique audit key ("logins") associated with the rule. The key helps in identifying and filtering audit
 # events related to logins.
 
+# the files logging the authentication failures for users
+-w /var/run/faillock/ -p wa -k logins
+
+# CIS 4.1.7 Ensure login and logout events are collected
 -w /var/log/faillock -p wa -k logins
 
-# -w /var/log/faillock -p wa -k logins
 # Similar to the first rule, this line watches the file /var/log/faillock.
 # -p wa: As before, it sets permissions to watch for write access and attribute modification.
 # -k logins: It uses the same audit key ("logins") to associate events with login-related activities.
