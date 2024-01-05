@@ -1,4 +1,7 @@
 # Record the execve system call for users above UID 500 to catch all program executions
-# This will log all OS commands issued by DBAs and their scripts
+# The intention of this optional rule is to log all OS commands issued by DBAs and their scripts
+# in order to provide end-to-end traceability of users accessing the OS and subsequently accessing
+# a database using a utility such as sqlplus
+
 -a exit,always -F arch=b64 -S execve -F auid>=1000
 -a exit,always -F arch=b32 -S execve -F auid>=1000
