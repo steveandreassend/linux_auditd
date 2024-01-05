@@ -12,6 +12,8 @@
 # call returned EACCES (permission denied to the file) or EPERM (some other permanent
 # error associated with the specific system call). All audit records will be tagged with the
 # identifier "access."
+
+# Duplicated:
 # -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
 #-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
 #-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
