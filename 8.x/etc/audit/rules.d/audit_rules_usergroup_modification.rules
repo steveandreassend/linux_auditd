@@ -4,7 +4,7 @@
 # configuration) files. The parameters in this section will watch the files to see if they have
 # been opened for write or have had attribute changes (e.g. permissions) and tag them with
 # the identifier "identity" in the audit log file.
-# vi /etc/audit/rules.d/50-identity.rules
+
 -w /etc/group -p wa -k identity
 -w /etc/passwd -p wa -k identity
 -w /etc/gshadow -p wa -k identity
