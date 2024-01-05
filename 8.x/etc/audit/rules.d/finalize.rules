@@ -1,2 +1,32 @@
+# The finalize.rules file is an optional configuration file that can be used in the context of the auditd
+# service in Linux. It allows administrators to define additional rules or configurations that will be applied
+# after the main audit rules have been processed.
+
+# When auditd starts, it loads the main audit rules usually specified in /etc/audit/rules.d/ directory
+# (or a specific audit rules file like /etc/audit/audit.rules). These rules define what events or activities
+# should be audited and logged by the system.
+
+# The finalize.rules file comes into play after the main audit rules have been loaded. It provides an
+# opportunity to append or modify rules that can be applied as final configurations or checks.
+
+# Here's a typical workflow:
+
+# 1. Loading Main Audit Rules**: On system startup or service restart, auditd loads the main audit rules
+# from the configured location (like /etc/audit/audit.rules or rules defined in files within /etc/audit/rules.d/).
+
+# 2. Applying Additional Rules via finalize.rules**: Once the main rules have been loaded, auditd checks for
+# the existence of a finalize.rules file (located in the same directory). If present, it processes the rules
+# defined in this file, allowing for additional or modifying audit rules to be applied as a final step.
+
+# Administrators can use finalize.rules to perform actions such as:
+# - Adding further rules to monitor specific events or actions.
+# - Overriding or modifying existing rules that were set in the main audit rules.
+# - Including rules that should only take effect after the primary audit rules have been established.
+
+# It's important to note that the finalize.rules file is an optional feature and may not exist by default in
+# every auditd setup. Its usage depends on the specific requirements of the system and the security policies
+# in place. When present, this file helps administrators fine-tune and refine the auditing rules and configurations
+# to better suit the security needs of the system.
+
 # CIS 4.1.17 Ensure the audit configuration is immutable
 -e 2
