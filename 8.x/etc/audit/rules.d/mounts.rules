@@ -1,4 +1,10 @@
 # STIG
+
+# Export to media (successful)
+# You have to mount media before using it. You must disable all automounting
+# so that its done manually in order to get the correct user requesting the
+# export
+
 # -a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
 # -a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
 
