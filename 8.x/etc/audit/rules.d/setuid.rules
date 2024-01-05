@@ -1,3 +1,16 @@
 # CIS 10.2.5.b All elevation of privileges is logged
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=setuid
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=setuid
+# CIS 4.1.15 Ensure system administrator command executions (sudo) are collected
+
+# sudo provides users with temporary elevated privileges to perform operations. Monitor the
+# administrator with temporary elevated privileges and the operation(s) they performed.
+
+-a always,exit -F arch=b64 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k actions
+-a always,exit -F arch=b32 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k actions
+
+# Refer to access.rules for logging sudo events
+
+# STIG
+
+# Duplicates:
+# -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=setuid
+# -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=setuid
