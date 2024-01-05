@@ -1,0 +1,2 @@
+# CIS 4.1.17 Ensure the audit configuration is immutable
+-e 2
