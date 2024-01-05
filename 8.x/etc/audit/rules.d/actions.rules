@@ -1,3 +1,6 @@
+# CIS 4.1.14 Ensure changes to system administration scope (sudoers) is collected
+# STIG
+
 # Record requests for write or file attribute change access to /etc/sudoers
 -w /etc/sudoers -p wa -k actions
 
