@@ -12,6 +12,8 @@
 -w /etc/security/opasswd -p wa -k identity
 
 # STIG
+
+# Duplicates:
 #-w /etc/group -p wa -k audit_rules_usergroup_modification
 #-w /etc/gshadow -p wa -k audit_rules_usergroup_modification
 #-w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
