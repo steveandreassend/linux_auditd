@@ -3,7 +3,32 @@
 
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
--w /etc/issue -p wa -k system-locale
--w /etc/issue.net -p wa -k system-locale
--w /etc/hosts -p wa -k system-locale
+
+#-w /etc/issue -p wa -k system-locale
+
+#-w /etc/issue.net -p wa -k system-locale
+
+#-w /etc/hosts -p wa -k system-locale
+
 -w /etc/sysconfig/network -p wa -k system-locale
+
+# STIG
+
+# -a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale
+# -a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale
+
+# -a always,exit -F arch=b32 -F path=/etc/issue -F perm=wa -F key=system-locale
+# -a always,exit -F arch=b64 -F path=/etc/issue -F perm=wa -F key=system-locale
+
+-a always,exit -F arch=b32 -F path=/etc/issue.net -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/issue.net -F perm=wa -F key=system-locale
+
+-a always,exit -F arch=b32 -F path=/etc/hosts -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/hosts -F perm=wa -F key=system-locale
+
+-a always,exit -F arch=b32 -F path=/etc/hostname -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/hostname -F perm=wa -F key=system-locale
+
+-a always,exit -F arch=b32 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
+
