@@ -5,15 +5,16 @@
 ## various components within the information system (e.g., module or policy filter). The list of audited events is
 ## the set of events for which audits are to be generated. This set of events is typically a subset of the list of
 ## all events for which the system is capable of generating audit records. DoD has defined the list of events for
-## which RHEL 8 will provide an audit record generation capability as the following: 1) Successful and unsuccessful
-## attempts to access, modify, or delete privileges, security objects, security levels, or categories of information
-## (e.g., classification levels); 2) Access actions, such as successful and unsuccessful logon attempts, privileged
-## activities or other system-level access, starting and ending time for user access to the system, concurrent logons
-## from different workstations, successful and unsuccessful accesses to objects, all program initiations, and all direc
-## access to the information system; 3) All account creations, modifications, disabling, and terminations; and
-## 4) All kernel module load, unload, and restart actions. Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015,
-## SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215,
-## SRG-OS-000473-GPOS-00218
+## which RHEL 8 will provide an audit record generation capability as the following:
+## 1) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels,
+## or categories of information (e.g., classification levels);
+## 2) Access actions, such as successful and unsuccessful logon attempts, privileged activities or other system-level access,
+## starting and ending time for user access to the system, concurrent logons from different workstations, successful and
+## unsuccessful accesses to objects, all program initiations, and all direct access to the information system;
+## 3) All account creations, modifications, disabling, and terminations; and
+## 4) All kernel module load, unload, and restart actions.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031,
+## SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000473-GPOS-00218
 
 ## STIG (GEN002720-GEN002840: CAT II) (Previously – G100-G106) The SA will
 ## configure the auditing system to audit the following events for all
