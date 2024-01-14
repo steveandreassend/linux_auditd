@@ -1,9 +1,9 @@
-# CIS 4.1.4 Ensure events that modify user/group information are collected
-# Record events affecting the group , passwd (user IDs), shadow and gshadow (passwords) or
-# /etc/security/opasswd (old passwords, based on remember parameter in the PAM
-# configuration) files. The parameters in this section will watch the files to see if they have
-# been opened for write or have had attribute changes (e.g. permissions) and tag them with
-# the identifier "identity" in the audit log file.
+## CIS 4.1.4 Ensure events that modify user/group information are collected
+## Record events affecting the group , passwd (user IDs), shadow and gshadow (passwords) or
+## /etc/security/opasswd (old passwords, based on remember parameter in the PAM
+## configuration) files. The parameters in this section will watch the files to see if they have
+## been opened for write or have had attribute changes (e.g. permissions) and tag them with
+## the identifier "identity" in the audit log file.
 
 -w /etc/group -p wa -k identity
 -w /etc/passwd -p wa -k identity
@@ -11,11 +11,19 @@
 -w /etc/shadow -p wa -k identity
 -w /etc/security/opasswd -p wa -k identity
 
-# STIG
+## STIG
 
-# Duplicates:
-#-w /etc/group -p wa -k audit_rules_usergroup_modification
-#-w /etc/gshadow -p wa -k audit_rules_usergroup_modification
-#-w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
-#-w /etc/passwd -p wa -k audit_rules_usergroup_modification
-#-w /etc/shadow -p wa -k audit_rules_usergroup_modification
+## Duplicates:
+## -w /etc/group -p wa -k audit_rules_usergroup_modification
+## -w /etc/gshadow -p wa -k audit_rules_usergroup_modification
+## -w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
+
+## V-230406 RHEL must generate audit records for all account creations, modifications, disabling,
+## and termination events that affect /etc/passwd.
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or identify
+## those responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000004-GPOS-00004, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031, SRG-OS-000304-GPOS-00121, SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000470-GPOS-00214, SRG-OS-000471-GPOS-00215, SRG-OS-000239-GPOS-00089, SRG-OS-000240-GPOS-00090, SRG-OS-000241-GPOS-00091, SRG-OS-000303-GPOS-00120, SRG-OS-000304-GPOS-00121, SRG-OS-000466-GPOS-00210, SRG-OS-000476-GPOS-00221
+## -w /etc/passwd -p wa -k audit_rules_usergroup_modification
+
+## -w /etc/shadow -p wa -k audit_rules_usergroup_modification
