@@ -1,35 +1,84 @@
-# STIG
+## STIG
 
-# chmod
+## V-230456 Successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls in RHEL 8 must generate an audit record
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or identify
+## those responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). The "chmod" system call changes the file mode bits of each given file according
+## to mode, which can be either a symbolic representation of changes to make, or an octal number representing the
+## bit pattern for the new mode bits. The "fchmod" system call is used to change permissions of a file. The "fchmodat"
+## system call is used to change permissions of a file relative to a directory file descriptor. When a user logs on,
+## the AUID is set to the UID of the account that is being authenticated. Daemons are not user sessions and have the
+## loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit
+## system interprets "-1", "4294967295", and "unset" in the same way. The system call rules are loaded into a matching
+## engine that intercepts each syscall made by all programs on the system. Therefore, it is very important to use syscall
+## rules only when absolutely necessary since these affect performance. The more rules, the bigger the performance hit.
+## Performance can be helped, however, by combining syscalls into one rule whenever possible.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172,
+## SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210
 -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
 
-# chown
+## V-230455 Successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls in RHEL 8 must generate an audit record
+## Without generating audit records that are specific to the security and mission needs of the organization, it
+## would be difficult to establish, correlate, and investigate the events relating to an incident or identify those
+## responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). The "chown" command is used to change file owner and group. The "fchown"
+## system call is used to change the ownership of a file referred to by the open file descriptor. The "fchownat"
+## system call is used to change ownership of a file relative to a directory file descriptor. The "lchown" system
+## call is used to change the ownership of the file specified by a path, which does not dereference symbolic links.
+## When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user
+## sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals
+## "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way. The system call rules
+## are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore,
+## it is very important to use syscall rules only when absolutely necessary since these affect performance.
+## The more rules, the bigger the performance hit. The performance can be helped, however, by combining syscalls
+## into one rule whenever possible.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172,
+## SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000064-GPOS-00033, SRG-OS-000466-GPOS-00210
 -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=unset -F key=perm_mod
 
-# fremovexattr
+## V-230413 The RHEL 8 audit system must be configured to audit any usage of the setxattr, fsetxattr, lsetxattr,
+## removexattr, fremovexattr, and lremovexattr system calls
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or identify
+## those responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). "Setxattr" is a system call used to set an extended attribute value.
+## "Fsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes on a
+## file. "Lsetxattr" is a system call used to set an extended attribute value. This is used to set extended attributes
+## on a symbolic link. "Removexattr" is a system call that removes extended attributes. "Fremovexattr" is a system call
+## that removes extended attributes. This is used for removal of extended attributes from a file. "Lremovexattr" is a
+## system call that removes extended attributes. This is used for removal of extended attributes from symbolic links.
+## When a user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user
+## sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which equals
+## "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way. The system call rules
+## are loaded into a matching engine that intercepts each syscall made by all programs on the system. Therefore, it
+## is very important to use syscall rules only when absolutely necessary since these affect performance. The more rules,
+## the bigger the performance hit. The performance can be helped, however, by combining syscalls into one rule whenever
+## possible.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000392-GPOS-00172,
+## SRG-OS-000458-GPOS-00203, SRG-OS-000462-GPOS-00206, SRG-OS-000463-GPOS-00207, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215,
+## SRG-OS-000474-GPOS-00219, SRG-OS-000466-GPOS-00210
 -a always,exit -F arch=b32 -S fremovexattr -S fsetxattr -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b64 -S fremovexattr -S fsetxattr -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=1000 -F auid!=unset -F key=perm_mod
-
-# setxattr
 -a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
 -a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
 
-# CIS 4.1.9 Ensure discretionary access control permission modification events are collected
-# Monitor changes to file permissions, attributes, ownership and group.
+## CIS 4.1.9 Ensure discretionary access control permission modification events are collected
+## Monitor changes to file permissions, attributes, ownership and group.
 
-# auid!=4294967295. This condition explicitly excludes events where the AUID is set to 4294967295.
-# This value (4294967295) typically represents an unset or invalid AUID.
+## auid!=4294967295. This condition explicitly excludes events where the AUID is set to 4294967295.
+## This value (4294967295) typically represents an unset or invalid AUID.
 
-# chmod - duplicates STIG
-# -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
-# -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## chmod - duplicates STIG
+## -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
 
-# chown - duplicates STIG
-# -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
-# -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## chown - duplicates STIG
+## -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
 
-# setxattr
--a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## setxattr - duplicates STIG
+## -a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
+## -a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
