@@ -10,3 +10,14 @@
 
 ## Set failure mode to syslog
 -f 1
+
+## STIG V-230403 audit system must protect logon UIDs from unauthorized change.
+## Unauthorized disclosure of audit records can reveal system and configuration data to attackers,
+## thus compromising its confidentiality. Audit information includes all information (e.g., audit
+## records, audit settings, audit reports) needed to successfully audit RHEL 8 system activity.
+## In immutable mode, unauthorized users cannot execute changes to the audit system to potentially
+## hide malicious activity and then put the audit rules back. A system reboot would be noticeable
+## and a system administrator could then investigate the unauthorized changes.
+## Satisfies: SRG-OS-000057-GPOS-00027, SRG-OS-000058-GPOS-00028, SRG-OS-000059-GPOS-00029
+## Configure the audit system to set the logon UIDs to be immutable by adding the following line to "/etc/audit/rules.d/audit.rules"
+--loginuid-immutable
