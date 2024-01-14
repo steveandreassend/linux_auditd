@@ -57,7 +57,22 @@
 -a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 ## -a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd
 
+## STIG
+## V-230447 Successful/unsuccessful uses of the crontab command in RHEL 8 must generate an audit record
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or identify
+## those responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). The "crontab" command is used to maintain crontab files for individual users.
+## Crontab is the program used to install, remove, or list the tables used to drive the cron daemon. This is similar
+## to the task scheduler used in other operating systems. When a user logs on, the AUID is set to the UID of the
+## account that is being authenticated. Daemons are not user sessions and have the loginuid set to "-1".
+## The AUID representation is an unsigned 32-bit integer, which equals "4294967295". The audit system interprets
+## "-1", "4294967295", and "unset" in the same way.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031,
+## SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215
 -a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+##
+
 -a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
