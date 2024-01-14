@@ -1,5 +1,19 @@
 -a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+
+## STIG
+## V-230419 Successful/unsuccessful uses of the chcon command in RHEL 8 must generate an audit record.
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or identify
+## those responsible for one. Audit records can be generated from various components within the information system
+## (e.g., module or policy filter). The "chcon" command is used to change file SELinux security context. When a
+## user logs on, the AUID is set to the UID of the account that is being authenticated. Daemons are not user
+## sessions and have the loginuid set to "-1". The AUID representation is an unsigned 32-bit integer, which 
+## equals "4294967295". The audit system interprets "-1", "4294967295", and "unset" in the same way.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031,
+## SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000468-GPOS-00212, SRG-OS-000471-GPOS-00215
 -a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+##-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod
+
 -a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
