@@ -1,7 +1,26 @@
-# Record the execve system call for users above UID 500 to catch all program executions
-# The intention of this optional rule is to log all OS commands issued by DBAs and their scripts
-# in order to provide end-to-end traceability of users accessing the OS and subsequently accessing
-# a database using a utility such as sqlplus
+## Outside CIS and STIG
 
--a exit,always -F arch=b64 -S execve -F auid>=1000
--a exit,always -F arch=b32 -S execve -F auid>=1000
+## Record the execve system call for users above UID 1000 to catch all program executions
+## The intention of this optional rule is to log all OS commands issued by DBAs and their scripts
+## in order to provide end-to-end traceability of users accessing the OS and subsequently accessing
+## a database using a utility such as sqlplus
+
+-a always,exit -F arch=b32 -S execve -F auid>=1000 -k execall
+-a always,exit -F arch=b64 -S execve -F auid>=1000 -k execall
+
+# STIG
+
+## V-230386 The RHEL 8 audit system must be configured to audit the execution of privileged functions
+## and prevent all software from executing at higher privilege levels than users executing the software.
+## Misuse of privileged functions, either intentionally or unintentionally by authorized users, or by
+## unauthorized external entities that have compromised information system accounts, is a serious and
+## ongoing concern and can have significant adverse impacts on organizations. Auditing the use of privileged
+## functions is one way to detect such misuse and identify the risk from insider threats and the advanced
+## persistent threat.
+## Satisfies: SRG-OS-000326-GPOS-00126, SRG-OS-000327-GPOS-00127
+
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv
+
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv
