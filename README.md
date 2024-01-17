@@ -2,14 +2,19 @@
 
 Description
 ===========
-This repo provides the best practice configuration for Linux auditd for CIS and STIG standards for RedHat and Oracle Linux.
+This repo provides the best practice configuration for Linux auditd for CIS and STIG standards for RedHat and Oracle Linux. These files can be copied to /etc/audit/ to replace existing files.
+
+The CIS (Center for Internet Security) produces various cyber security related services. In particular, it produces benchmarks, which are “configuration guidelines for various technology groups to safeguard systems against today evolving cyber threat" in the words of the CIS.
+
+Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
 References
+==========
 * [Center for Internet Security (CIS) compliance in Red Hat Enterprise Linux using OpenSCAP](https://www.redhat.com/en/blog/center-internet-security-cis-compliance-red-hat-enterprise-linux-using-openscap)
 * [Red Hat Enterprise Linux 8 (3.0.0)](https://www.cisecurity.org/benchmark/red_hat_linux)
 * [Red Hat Enterprise Linux 8 Security Technical Implementation Guide](https://www.stigviewer.com/stig/red_hat_enterprise_linux_8/2023-09-11/MAC-1_Classified/)
 
-These files are copied to /et/audit to replace existing files.
+
 
 To generate the rules file:
 ===========================
@@ -33,6 +38,13 @@ Remember, changes made to the audit rules won't take effect until you reload the
    # auditctl -R /etc/audit/audit.rules
 ```
    This command loads the rules from the `audit.rules` file into the running audit system.
+
+Activate Rules
+======================
+```bash
+   $ sudo systemctl restart auditd
+   $ sudo systemctl status auditd
+```
 
 Configure Log Rotation
 ======================
