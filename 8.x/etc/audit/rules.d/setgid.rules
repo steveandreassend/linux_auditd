@@ -1,2 +1,6 @@
+## This audit rule logs every instance where a 64-bit process attempts to execute a new program (execve system call)
+## when its group ID does not match its effective group ID, and where the effective group ID is 0 (superuser privileges).
+## This rule can be particularly useful for monitoring potential privilege escalation or other security-relevant events.
+
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=setgid
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=setgid
