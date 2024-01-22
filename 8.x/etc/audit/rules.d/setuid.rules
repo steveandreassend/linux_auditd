@@ -14,3 +14,21 @@
 ## Duplicates:
 ## -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=setuid
 ## -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=setuid
+
+## These rules are tailored to monitor the execution of systemd-run and pkexec on both 32-bit and 64-bit systems.
+## They focus on instances where these commands are executed by any user other than an unset user, indicating
+## active sessions. Given the nature of these commands, especially in the context of privilege escalation or
+## executing actions with elevated privileges, it's important to audit their usage. The key "maybe-escalation"
+## suggests a focus on security and monitoring for potential misuse or abnormal behavior.
+
+## systemd-run is a command used to execute a process as a systemd unit
+## pkexec allows an authorized user to execute programs as another user (typically the superuser).
+## Both can be used for changing privileges, which is a sensitive operation.
+
+## Special case for systemd-run. It is not audit aware, specifically watch it
+-a always,exit -F arch=b32 -F path=/usr/bin/systemd-run -F perm=x -F auid!=unset -F key=maybe-escalation
+-a always,exit -F arch=b64 -F path=/usr/bin/systemd-run -F perm=x -F auid!=unset -F key=maybe-escalation
+
+## Special case for pkexec. It is not audit aware, specifically watch it
+-a always,exit -F arch=b32 -F path=/usr/bin/pkexec -F perm=x -F key=maybe-escalation
+-a always,exit -F arch=b64 -F path=/usr/bin/pkexec -F perm=x -F key=maybe-escalation
