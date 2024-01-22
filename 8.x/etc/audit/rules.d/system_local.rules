@@ -1,24 +1,26 @@
-# CIS 4.1.5 Ensure events that modify the system's network environment are collected
-# Record changes to network environment files or system calls.
+## CIS 4.1.5 Ensure events that modify the system's network environment are collected
+## Record changes to network environment files or system calls.
 
--a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
 
-#-w /etc/issue -p wa -k system-locale
+##-w /etc/issue -p wa -k system-locale
 
-#-w /etc/issue.net -p wa -k system-locale
+##-w /etc/issue.net -p wa -k system-locale
 
-#-w /etc/hosts -p wa -k system-locale
+##-w /etc/hosts -p wa -k system-locale
 
 -w /etc/sysconfig/network -p wa -k system-locale
 
-# STIG
+## STIG
 
-# -a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale
-# -a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale
+# Duplicates
+## -a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale
+## -a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale
 
-# -a always,exit -F arch=b32 -F path=/etc/issue -F perm=wa -F key=system-locale
-# -a always,exit -F arch=b64 -F path=/etc/issue -F perm=wa -F key=system-locale
+# Duplicates
+## -a always,exit -F arch=b32 -F path=/etc/issue -F perm=wa -F key=system-locale
+## -a always,exit -F arch=b64 -F path=/etc/issue -F perm=wa -F key=system-locale
 
 -a always,exit -F arch=b32 -F path=/etc/issue.net -F perm=wa -F key=system-locale
 -a always,exit -F arch=b64 -F path=/etc/issue.net -F perm=wa -F key=system-locale
