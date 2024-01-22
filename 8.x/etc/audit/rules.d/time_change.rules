@@ -1,6 +1,40 @@
-# CIS 4.1.3 Ensure events that modify date and time information are collected
--a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
--a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change
--a always,exit -F arch=b64 -S clock_settime -k time-change
--a always,exit -F arch=b32 -S clock_settime -k time-change
--w /etc/localtime -p wa -k time-change
+# STIG
+
+## (GEN002880: CAT II) The IAO will ensure the auditing software can
+## record the following for each audit event: 
+##- Date and time of the event 
+##- Userid that initiated the event 
+##- Type of event 
+##- Success or failure of the event 
+##- For I&A events, the origin of the request (e.g., terminal ID) 
+##- For events that introduce an object into a user’s address space, and
+##  for object deletion events, the name of the object, and in MLS
+##  systems, the object’s security level.
+##
+## Things that could affect time
+
+-a always,exit -F arch=b32 -S adjtimex,settimeofday,stime -F key=time-change
+-a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=time-change
+
+-a always,exit -F arch=b32 -S clock_settime -F a0=0x0 -F key=time-change
+-a always,exit -F arch=b64 -S clock_settime -F a0=0x0 -F key=time-change
+
+## Introduced in 2.6.39, commented out because it can make false positives
+
+##-a always,exit -F arch=b32 -S clock_adjtime -F key=time-change
+##-a always,exit -F arch=b64 -S clock_adjtime -F key=time-change
+
+-a always,exit -F arch=b32 -F path=/etc/localtime -F perm=wa -F key=time-change
+-a always,exit -F arch=b64 -F path=/etc/localtime -F perm=wa -F key=time-change
+
+## CIS 4.1.3 Ensure events that modify date and time information are collected
+
+# Duplicates STIG
+
+##-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change
+##-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
+
+##-a always,exit -F arch=b32 -S clock_settime -k time-change
+##-a always,exit -F arch=b64 -S clock_settime -k time-change
+
+##-w /etc/localtime -p wa -k time-change
