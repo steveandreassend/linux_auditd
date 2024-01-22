@@ -1,17 +1,17 @@
-# These rules specifically targets successful file deletion operations carried out by users meeting
-# the specified criteria. It's designed for monitoring file-related activities for security or compliance purposes,
-# to keep track of file deletions performed by identified users and potentially detect unauthorized or unintended file removals
+## These rules specifically targets successful file deletion operations carried out by users meeting
+## the specified criteria. It's designed for monitoring file-related activities for security or compliance purposes,
+## to keep track of file deletions performed by identified users and potentially detect unauthorized or unintended file removals
 
-# System calls (rename, renameat, rmdir, unlink, unlinkat)
+## System calls (rename, renameat, rmdir, unlink, unlinkat)
 
-# STIG
+## STIG
 -a always,exit -F arch=b32 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
 -a always,exit -F arch=b64 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
 
-# CIS 4.1.13 Ensure file deletion events by users are collected
-# Monitor the use of system calls associated with the deletion or renaming of files and file
-# attributes. This configuration statement sets up monitoring for following system calls and
-# tags them with the identifier "delete"
-# Disabled because the STIG rules are more comprehensive
-# -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
-# -a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
+## CIS 4.1.13 Ensure file deletion events by users are collected
+## Monitor the use of system calls associated with the deletion or renaming of files and file
+## attributes. This configuration statement sets up monitoring for following system calls and
+## tags them with the identifier "delete"
+## Disabled because the STIG rules are more comprehensive
+## -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
+## -a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
