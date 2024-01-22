@@ -1,16 +1,29 @@
-# STIG
+## STIG
+
+## V-230446	Successful/unsuccessful uses of the delete_module command in RHEL 8 must generate an audit record.
+## Without generating audit records that are specific to the security and mission needs of the organization,
+## it would be difficult to establish, correlate, and investigate the events relating to an incident or
+## identify those responsible for one. Audit records can be generated from various components within the
+## information system (e.g., module or policy filter). The "delete_module" command is used to unload a
+## kernel module. When a user logs on, the AUID is set to the UID of the account that is being authenticated.
+## Daemons are not user sessions and have the loginuid set to "-1". The AUID representation is an unsigned
+## 32-bit integer, which equals "4294967295". The audit system interprets "-1", "4294967295", and "unset"
+## in the same way.
+## Satisfies: SRG-OS-000062-GPOS-00031, SRG-OS-000037-GPOS-00015, SRG-OS-000042-GPOS-00020, SRG-OS-000062-GPOS-00031,
+## SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215
+
 -a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
 -a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
 
 -a always,exit -F arch=b32 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
 -a always,exit -F arch=b64 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
 
-# CIS 4.1.16 Ensure kernel module loading and unloading is collected
-# Monitor the loading and unloading of kernel modules.
+## CIS 4.1.16 Ensure kernel module loading and unloading is collected
+## Monitor the loading and unloading of kernel modules.
 
 -w /sbin/insmod -p x -k modules
 -w /sbin/rmmod -p x -k modules
 -w /sbin/modprobe -p x -k modules
 
-# Duplicates:
-# -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
+## Duplicates:
+## -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
