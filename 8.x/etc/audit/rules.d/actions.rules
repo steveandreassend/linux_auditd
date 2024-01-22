@@ -14,7 +14,7 @@
 ## SRG-OS-000304-GPOS-00121, CCI-002884, SRG-OS-000466-GPOS-00210, SRG-OS-000476-GPOS-00221
 -w /etc/sudoers -p wa -k actions
 
-# # Record requests for write or file attribute change access to /etc/sudoers.d
+## Record requests for write or file attribute change access to /etc/sudoers.d
 -w /etc/sudoers.d/ -p wa -k actions
 
 ## See setuid.rules for rules for tracking sudo activity for CIS 10.2.5.b All elevation of privileges is logged
