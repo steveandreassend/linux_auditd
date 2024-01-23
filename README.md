@@ -8,7 +8,7 @@ The CIS (Center for Internet Security) produces various cyber security related s
 
 Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
-Additionally it includes rules to track the Break Glass activity of Linux OS users by recording all OS commands executed. This is useful on database servers where DBAs login into the Linux OS to run commands to perform exceptional tasks for planned and unplanned maintenance.
+Additionally it includes rules to track the Break Glass activity of Linux OS users by recording all OS commands executed. This is useful on database servers where DBAs exceptionally login into the Linux OS with approved access to run commands to perform tasks for planned and unplanned maintenance.
 
 References
 ==========
