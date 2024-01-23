@@ -8,13 +8,39 @@ The CIS (Center for Internet Security) produces various cyber security related s
 
 Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
+Additionally it includes rules to track the Break Glass activity of Linux OS users by recording all OS commands executed. This is useful on database servers where DBAs login into the Linux OS to run commands to perform exceptional tasks for planned and unplanned maintenance.
+
 References
 ==========
 * [Center for Internet Security (CIS) compliance in Red Hat Enterprise Linux using OpenSCAP](https://www.redhat.com/en/blog/center-internet-security-cis-compliance-red-hat-enterprise-linux-using-openscap)
 * [Red Hat Enterprise Linux 8 (3.0.0)](https://www.cisecurity.org/benchmark/red_hat_linux)
 * [Red Hat Enterprise Linux 8 Security Technical Implementation Guide](https://www.stigviewer.com/stig/red_hat_enterprise_linux_8/2023-09-11/MAC-1_Classified/)
 
+List of Rules:
+===========================
+The following rules files exist:
+* MAC_policy.rules:
+* access.rules:
+* actions.rules:
+* activity.rules: This tracks Break Glass activities outside the CIS and STIG baselines.
+* audit.rules:
+* audit_rules_usergroup_modification.rules:
+* delete.rules:
+* finalize.rules:
+* logins.rules: This tracks all login (successful and unsuccessful) and logout events.
+* modules.rules:
+* mounts.rules:
+* perm_mod.rules:
+* privileged.rules:
+* setgid.rules:
+* setuid.rules:
+* system_local.rules: This tracks all activity that modify system parameters such as the hostname.
+* time_change.rules: This tracks all activity that changes the sytem time.
 
+To view logs that match these records, use the key which matches the *.rules filename.
+```bash
+   # ausearch -k logins
+```
 
 To generate the rules file:
 ===========================
