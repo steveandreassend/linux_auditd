@@ -45,6 +45,22 @@ To view logs that match these records, use the key which matches the *.rules fil
 To generate the rules file:
 ===========================
 
+The augenrules script reads rules located in the /etc/audit/rules.d/ directory and compiles them into an audit.rules file. This script processes all files that end with .rules in a specific order based on their natural sort order. The files in this directory are organized into groups with the following meanings:
+
+10 Kernel and auditctl configuration
+20 Rules that could match general rules but you want a different match
+30 Main rules
+40 Optional rules
+50 Server-specific rules
+70 System local rules
+90 Finalize (immutable)
+
+```bash
+   # augenrules --load
+```
+
+ 
+ 
 The `/etc/audit/rules.d` directory contains separate files that define individual audit rules.
 To generate the consolidated `audit.rules` file from these individual rule files, you can use the `auditctl` command.
 Remember, changes made to the audit rules won't take effect until you reload them using `auditctl`. Additionally, ensure that the rules in the individual files (`/etc/audit/rules.d/*.rules`) are properly formatted and valid audit rules; otherwise, errors might occur when loading the rules into the audit system.
