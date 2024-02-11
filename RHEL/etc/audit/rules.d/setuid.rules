@@ -1,11 +1,12 @@
 ## CIS 10.2.5.b All elevation of privileges is logged
 ## CIS 4.1.15 Ensure system administrator command executions (sudo) are collected
+## CCE-83555-3 Record Events When Privileged Executables Are Run
 
 ## sudo provides users with temporary elevated privileges to perform operations. Monitor the
 ## administrator with temporary elevated privileges and the operation(s) they performed.
 
--a always,exit -F arch=b64 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k setuid
 -a always,exit -F arch=b32 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k setuid
+-a always,exit -F arch=b64 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k setuid
 
 ## Refer to access.rules for logging sudo events
 
