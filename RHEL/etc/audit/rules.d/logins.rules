@@ -105,7 +105,7 @@
 ## -p wa: As before, it sets permissions to watch for write access and attribute modification.
 ## -k logins: It uses the same audit key ("logins") to associate events with login-related activities.
 
--w /var/log/tallylog -p wa -k logins
+## -w /var/log/tallylog -p wa -k logins
 
 ## /var/log/tallylog keeps track of login failure records or counts. It's related to the system's mechanism for managing login
 ## attempts and can be associated with tools or services like pam_tally2.
