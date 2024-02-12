@@ -10,19 +10,19 @@
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules during
 ## daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits of
 ## files involved in storing logon events:
--w  -p wa -k logins
+## -w  -p wa -k logins
 
 ## CCE-80384-1	Record Attempts to Alter Logon and Logout Events - lastlog
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules
 ## during daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits
 ## of files involved in storing logon events:
--w /var/log/lastlog -p wa -k logins
+## -w /var/log/lastlog -p wa -k logins
 
 ## CCE-80994-7	Record Attempts to Alter Logon and Logout Events - tallylog
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules during
 ## daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits of files
 ## involved in storing logon events:
--w /var/log/tallylog -p wa -k logins
+## -w /var/log/tallylog -p wa -k logins
 
 ## STIG
 ## V-230467 Successful/unsuccessful modifications to the lastlog file in RHEL 8 must generate an audit record.
