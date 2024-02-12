@@ -2,13 +2,15 @@
 
 Description
 ===========
-This repo provides as a reference the best practice configuration for Linux auditd logging by harmonizing the CIS and STIG standards for RedHat and Oracle Linux. These files can be copied to /etc/audit/ to replace existing files.
+This repo provides as a reference the best practice configuration for Linux auditd logging by harmonizing the CIS and STIG standards for RedHat and Oracle Linux.
 
 The CIS (Center for Internet Security) produces various cyber security related services. In particular, it produces benchmarks, which are “configuration guidelines for various technology groups to safeguard systems against today evolving cyber threat" in the words of the CIS.
 
 Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
 Additionally it includes rules to track the Break Glass activity of Linux OS users by recording all OS commands executed. This is useful on database servers where DBAs exceptionally login into the Linux OS with approved access to run commands to perform tasks for planned and unplanned maintenance.
+
+Instructions are provided to implement the configuration.
 
 References
 ==========
