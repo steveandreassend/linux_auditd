@@ -97,6 +97,9 @@
 ## CIS 4.1.7 Ensure login and logout events are collected
 -w /var/log/faillock -p wa -k logins
 
+
+
+
 ## NB: The remainder are not in STIG...
 
 ## the files logging the authentication failures for users
