@@ -2,7 +2,7 @@
 
 Description
 ===========
-This repo provides as a reference the best practice configuration for Linux auditd by harmonizing the CIS and STIG standards for RedHat and Oracle Linux. These files can be copied to /etc/audit/ to replace existing files.
+This repo provides as a reference the best practice configuration for Linux auditd logging by harmonizing the CIS and STIG standards for RedHat and Oracle Linux. These files can be copied to /etc/audit/ to replace existing files.
 
 The CIS (Center for Internet Security) produces various cyber security related services. In particular, it produces benchmarks, which are “configuration guidelines for various technology groups to safeguard systems against today evolving cyber threat" in the words of the CIS.
 
