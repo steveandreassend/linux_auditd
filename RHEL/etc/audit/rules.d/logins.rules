@@ -66,7 +66,7 @@
 
 ## CIS 4.1.7 Ensure login and logout events are collected
 ## Monitor login and logout events.
--w /var/log/lastlog -p wa -k logins
+## -w /var/log/lastlog -p wa -k logins
 
 ## -w /var/log/lastlog: This specifies the file path or object to watch. In this case, it's watching the /var/log/lastlog file.
 ## -p wa: This sets the permissions to watch for changes. "w" stands for write access, and "a" stands for attribute modification
