@@ -108,7 +108,7 @@
 
 
 
-## NB: The remainder are not in STIG...
+## NB: The remainder are not in STIG CIS for RHEL, and appear to be for Ubuntu...
 
 ## Similar to the first rule, this line watches the file /var/log/faillock.
 ## -p wa: As before, it sets permissions to watch for write access and attribute modification.
@@ -135,10 +135,10 @@
 ## user sessions and system events, so filtering for logout events specifically can be a bit tricky.
 
 ## /var/log/utmp - The utmp file allows one to discover information about who is currently using the system.
--w /var/run/utmp -p wa -k logout
+## -w /var/run/utmp -p wa -k logout
 
 ## /var/log/wtmp - The wtmp file records all logins and logouts.
--w /var/log/wtmp -p wa -k logout
+## -w /var/log/wtmp -p wa -k logout
 
 ## Verification:
 ## To view the events related to logout that are being audited, you can use the ausearch or ausearch command in combination
@@ -150,7 +150,7 @@
 ## associated with session events.
 ##-w /var/run/utmp -p wa -k session
 ##-w /var/log/wtmp -p wa -k logins
--w /var/log/btmp -p wa -k logins
+## -w /var/log/btmp -p wa -k logins
 
 ## The information typically recorded in /var/log/btmp includes:
 ## Username: The username attempted during the failed login.
