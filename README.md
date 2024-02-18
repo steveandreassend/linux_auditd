@@ -88,6 +88,8 @@ Activate Rules
 ```bash
    $ sudo systemctl restart auditd
    $ sudo systemctl status auditd
+# List rules
+   $ sudo auditctl -l
 ```
 
 Configure Log Rotation
