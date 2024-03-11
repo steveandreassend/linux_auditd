@@ -121,28 +121,3 @@
 ## CIS 4.1.3.12 Ensure login and logout events are collected
 
 -w /var/run/faillock/ -p wa -k logins
-
-
-
-## NB: The remainder are not in STIG CIS for RHEL, and appear to be for Ubuntu...
-
-## Similar to the first rule, this line watches the file /var/log/faillock.
-## -p wa: As before, it sets permissions to watch for write access and attribute modification.
-## -k logins: It uses the same audit key ("logins") to associate events with login-related activities.
-
-## -w /var/log/tallylog -p wa -k logins
-
-## /var/log/tallylog keeps track of login failure records or counts. It's related to the system's mechanism for managing login
-## attempts and can be associated with tools or services like pam_tally2.
-
-## This file stores information about failed login attempts for various user accounts on the system. Each time a user fails to log
-## in (due to incorrect credentials, for example), the count associated with that user increases in the tallylog file. This mechanism
-## is often used to enforce security policies, such as locking user accounts after a certain number of failed login attempts to
-## prevent unauthorized access.
-
-## Verification:
-## To view the events related to logout that are being audited, you can use the ausearch or ausearch command in combination
-## with grep to filter for the events related to the key "logins":
-##  ausearch -k logins | grep "msg=audit(.*): key=logins"
-
-
