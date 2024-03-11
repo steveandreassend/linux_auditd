@@ -145,31 +145,4 @@
 ## with grep to filter for the events related to the key "logins":
 ##  ausearch -k logins | grep "msg=audit(.*): key=logins"
 
-## Note: These rules above do not record logout events
 
-## Monitor utmp and wtmp files for logout events. However, note that utmp and wtmp files contain various types of records for
-## user sessions and system events, so filtering for logout events specifically can be a bit tricky.
-
-## /var/log/utmp - The utmp file allows one to discover information about who is currently using the system.
-## -w /var/run/utmp -p wa -k logout
-
-## /var/log/wtmp - The wtmp file records all logins and logouts.
-## -w /var/log/wtmp -p wa -k logout
-
-## Verification:
-## To view the events related to logout that are being audited, you can use the ausearch or ausearch command in combination
-## with grep to filter for the events related to the key "logout":
-##  ausearch -k logout | grep "msg=audit(.*): key=logout"
-
-## CIS 4.1.8 Ensure session initiation information is collected
-## Monitor session initiation events. The parameters in this section track changes to the files
-## associated with session events.
-##-w /var/run/utmp -p wa -k session
-##-w /var/log/wtmp -p wa -k logins
-## -w /var/log/btmp -p wa -k logins
-
-## The information typically recorded in /var/log/btmp includes:
-## Username: The username attempted during the failed login.
-## Terminal or IP address: The source of the login attempt, either the terminal or IP address from where the attempt was made.
-## Timestamp: The date and time of the failed login attempt.
-## Other relevant details: Additional information, depending on system configurations and services in use
