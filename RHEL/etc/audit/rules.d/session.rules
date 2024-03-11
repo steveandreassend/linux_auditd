@@ -1,0 +1,24 @@
+## CIS 4.1.8 Ensure session initiation information is collected
+## Monitor session initiation events. The parameters in this section track changes to the files
+## associated with session events.
+
+## xccdf_org.ssgproject.content_rule_audit_rules_session_events
+## Record Attempts to Alter Process and Session Initiation Information
+## Manual editing of these files may indicate nefarious activity, such as an attacker attempting to remove evidence of an intrusion.
+## -w /var/run/utmp -p wa -k session
+## -w /var/log/btmp -p wa -k session
+## -w /var/log/wtmp -p wa -k session
+
+-w /var/run/utmp -p wa -k session
+
+## The information typically recorded in /var/log/btmp includes:
+## Username: The username attempted during the failed login.
+## Terminal or IP address: The source of the login attempt, either the terminal or IP address from where the attempt was made.
+## Timestamp: The date and time of the failed login attempt.
+## Other relevant details: Additional information, depending on system configurations and services in use
+
+-w /var/log/btmp -p wa -k session
+
+## /var/log/wtmp - The wtmp file records all logins and logouts.
+
+-w /var/log/wtmp -p wa -k session
