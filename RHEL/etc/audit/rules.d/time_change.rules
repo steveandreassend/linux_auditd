@@ -13,28 +13,43 @@
 ##
 ## Things that could affect time
 
+## CIS 4.1.3 Ensure events that modify date and time information are collected
+
+## CIS Level 2
+## xccdf_org.ssgproject.content_rule_audit_rules_time_adjtimex
+## Record attempts to alter time through adjtimex
+
+## xccdf_org.ssgproject.content_rule_audit_rules_time_settimeofday
+## Record attempts to alter time through settimeofday
+
+## xccdf_org.ssgproject.content_rule_audit_rules_time_stime
+## Record Attempts to Alter Time Through stime
+## Since the 64 bit version of the "stime" system call is not defined in the audit lookup table, the corresponding "-F arch=b64"
+## form of this rule is not expected to be defined on 64 bit systems (the aforementioned "-F arch=b32" stime rule form itself is
+## sufficient for both 32 bit and 64 bit systems). The -k option allows for the specification of a key in string form that can be used
+## for better reporting capability through ausearch and aureport. Multiple system calls can be defined on the same line to save space
+## if desired, but is not required. See an example of multiple combined system calls:
+## -a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=audit_time_rules
+
 -a always,exit -F arch=b32 -S adjtimex,settimeofday,stime -F key=time-change
 -a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=time-change
+
+## CIS Level 2
+## xccdf_org.ssgproject.content_rule_audit_rules_time_clock_settime
+## Record Attempts to Alter Time Through clock_settime
 
 -a always,exit -F arch=b32 -S clock_settime -F a0=0x0 -F key=time-change
 -a always,exit -F arch=b64 -S clock_settime -F a0=0x0 -F key=time-change
 
-## Introduced in 2.6.39, commented out because it can make false positives
+## Introduced in 2.6.39, commented out in STIG because it can make false positives
 
 ##-a always,exit -F arch=b32 -S clock_adjtime -F key=time-change
 ##-a always,exit -F arch=b64 -S clock_adjtime -F key=time-change
 
+## CIS Level 2
+## xccdf_org.ssgproject.content_rule_audit_rules_time_watch_localtime
+## Record Attempts to Alter the localtime File
+## -w /etc/localtime -p wa -k audit_time_rules
+
 -a always,exit -F arch=b32 -F path=/etc/localtime -F perm=wa -F key=time-change
 -a always,exit -F arch=b64 -F path=/etc/localtime -F perm=wa -F key=time-change
-
-## CIS 4.1.3 Ensure events that modify date and time information are collected
-
-# Duplicates STIG
-
-##-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change
-##-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
-
-##-a always,exit -F arch=b32 -S clock_settime -k time-change
-##-a always,exit -F arch=b64 -S clock_settime -k time-change
-
-##-w /etc/localtime -p wa -k time-change
