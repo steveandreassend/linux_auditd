@@ -8,6 +8,20 @@
 -a always,exit -F arch=b32 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
 -a always,exit -F arch=b64 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
 
+## Record File Deletion Events by User
+
+## xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rename
+## Ensure auditd Collects File Deletion Events by User - rename
+
+## xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_renameat
+## Ensure auditd Collects File Deletion Events by User - renameat
+
+## xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlink
+## Ensure auditd Collects File Deletion Events by User - unlink
+
+## xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlinkat
+## Ensure auditd Collects File Deletion Events by User - unlinkat
+
 ## CIS 4.1.13 Ensure file deletion events by users are collected
 ## Monitor the use of system calls associated with the deletion or renaming of files and file
 ## attributes. This configuration statement sets up monitoring for following system calls and
