@@ -15,6 +15,21 @@
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv
 
+## CIS Level 2
+## Record Events When Executables Are Run As Another User
+## xccdf_org.ssgproject.content_rule_audit_rules_suid_auid_privilege_function
+## Creating an audit log of users with temporary elevated privileges and the operation(s) they performed is essential
+## to reporting. Administrators will want to correlate the events written to the audit trail with the records written
+## to sudo's logfile to verify if unauthorized commands have been executed. Misuse of privileged functions, either
+## intentionally or unintentionally by authorized users, or by unauthorized external entities that have compromised
+## information system accounts, is a serious and ongoing concern and can have significant adverse impacts on organizations.
+## Auditing the use of privileged functions is one way to detect such misuse and identify the risk from insider threats
+## and the advanced persistent threat.
+
+-a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation
+-a always,exit -F arch=b64  S execve -C euid!=uid -F auid!=unset -k user_emulation
+
+
 ## Outside CIS and STIG official baselines
 
 ## The intention of this optional rule on Database Servers is to log all OS commands issued by DBAs and
