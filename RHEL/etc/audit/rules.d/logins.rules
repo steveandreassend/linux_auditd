@@ -2,26 +2,35 @@
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules
 ## during daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted
 ## manual edits of files involved in storing logon events:
+
 -w /var/log/tallylog -p wa -k logins
 -w  -p wa -k logins
+
+## xccdf_org.ssgproject.content_rule_audit_rules_login_events_lastlog
+## Record Attempts to Alter Logon and Logout Events - lastlog
+## Manual editing of these files may indicate nefarious activity, such as an attacker attempting to remove evidence of an intrusion.
+
 -w /var/log/lastlog -p wa -k logins
 
 ## CCE-80383-3	Record Attempts to Alter Logon and Logout Events - faillock
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules during
 ## daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits of
 ## files involved in storing logon events:
+
 ## -w  -p wa -k logins
 
 ## CCE-80384-1	Record Attempts to Alter Logon and Logout Events - lastlog
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules
 ## during daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits
 ## of files involved in storing logon events:
+
 ## -w /var/log/lastlog -p wa -k logins
 
 ## CCE-80994-7	Record Attempts to Alter Logon and Logout Events - tallylog
 ## The audit system already collects login information for all users and root. If the auditd daemon is configured to use the augenrules program to read audit rules during
 ## daemon startup (the default), add the following lines to a file with suffix .rules in the directory /etc/audit/rules.d in order to watch for attempted manual edits of files
 ## involved in storing logon events:
+
 ## -w /var/log/tallylog -p wa -k logins
 
 ## STIG
@@ -67,6 +76,7 @@
 ## CIS 4.1.7 Ensure login and logout events are collected
 ## 4.1.3.12 Ensure login and logout events are collected
 ## Monitor login and logout events.
+
 ## -w /var/log/lastlog -p wa -k logins
 
 ## -w /var/log/lastlog: This specifies the file path or object to watch. In this case, it's watching the /var/log/lastlog file.
@@ -95,6 +105,11 @@
 ## SRG-OS-000392-GPOS-00172, SRG-OS-000462-GPOS-00206, SRG-OS-000471-GPOS-00215, SRG-OS-000473-GPOS-00218
 
 ## CIS 4.1.7 Ensure login and logout events are collected
+
+## xccdf_org.ssgproject.content_rule_audit_rules_login_events_faillock
+## Record Attempts to Alter Logon and Logout Events - faillock
+## Manual editing of these files may indicate nefarious activity, such as an attacker attempting to remove evidence of an intrusion.
+
 -w /var/log/faillock -p wa -k logins
 
 ## V-72145 The operating system must generate audit records for all unsuccessful account access events
@@ -104,6 +119,7 @@
 ## Satisfies: SRG-OS-000392-GPOS-00172, SRG-OS-000470-GPOS-00214, SRG-OS-000473-GPOS-00218
 ## Log the authentication failures for users
 ## CIS 4.1.3.12 Ensure login and logout events are collected
+
 -w /var/run/faillock/ -p wa -k logins
 
 
