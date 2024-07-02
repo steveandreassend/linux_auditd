@@ -41,23 +41,29 @@ sudo chmod 0640 /etc/audit/auditd.conf
 ```
 	
 The following rules files exist in this repo:
-* MAC_policy.rules:
-* access.rules:
-* actions.rules:
-* activity.rules: This tracks Break Glass activities outside the CIS and STIG baselines.
-* audit.rules:
-* audit_rules_usergroup_modification.rules:
-* delete.rules:
-* finalize.rules:
-* logins.rules: This tracks all login (successful and unsuccessful) and logout events.
-* modules.rules:
-* mounts.rules:
-* perm_mod.rules:
-* privileged.rules:
-* setgid.rules:
-* setuid.rules:
-* system_local.rules: This tracks all activity that modify system parameters such as the hostname.
-* time_change.rules: This tracks all activity that changes the sytem time.
+```
+10-base-config.rules
+30-actions.rules
+31-audit_rules_usergroup_modification.rules
+32-activity.rules
+33-access.rules
+34-delete.rules
+35-logins.rules
+36-session.rules
+42-activity.rules
+50-server-specific.rules.example
+70-system_local.rules
+71-MAC_policy.rules
+72-maintenance.rules
+73-modules.rules
+73-mounts.rules
+74-perm_mod.rules
+75-privileged.rules
+76-setgid.rules
+77-setuid.rules
+78-time_change.rules
+99-finalize.rules
+```
 
 To view logs that match these records, use the key which matches the *.rules filename.
 ```bash
