@@ -23,7 +23,24 @@ List of Rules:
 
 The `/etc/audit/rules.d` directory contains separate files that define individual audit rules.
 
-The following rules files exist:
+The files in this directory are organized into groups with following meanings:
+```
+10 - Kernel and auditctl configuration
+20 - Rules that could match general rules but you want a different match
+30 - Main rules
+40 - Optional rules
+50 - Server-specific rules
+70 - System local rules
+90 - Finalize (immutable)
+```
+
+Make sure the config and rules files have the correct permisions:
+```bash
+sudo chmod 0640 /etc/audit/rules.d/*.rules
+sudo chmod 0640 /etc/audit/auditd.conf
+```
+	
+The following rules files exist in this repo:
 * MAC_policy.rules:
 * access.rules:
 * actions.rules:
@@ -66,21 +83,12 @@ in the /usr/lib/systemd/system/auditd.service configuration file.
 
 In order to instruct the auditd daemon to use the auditctl utility to read audit rules, use the following setting:
 ```
-ExecStartPost=-/sbin/auditctl-R /etc/audit/audit. rules
+ExecStartPost=-/sbin/auditctl -R /etc/audit/audit.rules
 ```
 in the /usr/lib/systemd/system/auditd.service configuration file.
 
 The augenrules script reads rules located in the /etc/audit/rules.d/ directory and compiles them into an audit.rules file. This
-script processes all files that end with .rules in a specific order based on their natural sort order. The files in this directory
-are organized into groups with the following meanings:
-
-10 Kernel and auditctl configuration
-20 Rules that could match general rules but you want a different match
-30 Main rules
-40 Optional rules
-50 Server-specific rules
-70 System local rules
-90 Finalize (immutable)
+script processes all files that end with .rules in a specific order based on their natural sort order.
 
 ```bash
    # augenrules --load
@@ -110,10 +118,15 @@ otherwise, errors might occur when loading the rules into the audit system.
 
 Activate Rules
 ======================
+
+Restarting auditd will activate the rules:
 ```bash
    $ sudo systemctl restart auditd
    $ sudo systemctl status auditd
-# List rules
+```
+
+List the configured rules:
+```bash
    $ sudo auditctl -l
 ```
 
@@ -127,7 +140,7 @@ sudo cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
 sudo chmod -v +x /etc/cron.daily/auditd.cron
 ```
 
-Configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight.
+Configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight:
 
 ```bash
 sudo tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
