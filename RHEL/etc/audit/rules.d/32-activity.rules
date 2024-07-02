@@ -29,15 +29,3 @@
 -a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation
 -a always,exit -F arch=b64  S execve -C euid!=uid -F auid!=unset -k user_emulation
 
-
-## Outside CIS and STIG official baselines
-
-## The intention of this optional rule on Database Servers is to log all OS commands issued by DBAs and
-## their scripts. This provides end-to-end traceability of users accessing the OS and subsequently accessing
-## a database using a utility such as sqlplus. This is intended to track of Break Glass activities on
-## the Linux server so that user activity can be correlated with the technical justification of the approved access.
-
-## Record the execve system call for users above UID 1000 to catch all new program executions
-
--a always,exit -F arch=b32 -S execve -F auid>=1000 -k execall
--a always,exit -F arch=b64 -S execve -F auid>=1000 -k execall

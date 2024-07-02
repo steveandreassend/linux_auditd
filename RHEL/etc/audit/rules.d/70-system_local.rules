@@ -44,3 +44,13 @@
 ## Not covered by CIS Level 2
 -a always,exit -F arch=b32 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
 -a always,exit -F arch=b64 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
+
+## Audit every attempt to read or modify the sshd_config file
+-a always,exit -F arch=b32 -F path=/etc/ssh/sshd_config -F perm=warx -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/ssh/sshd_config -F perm=warx -F key=system-locale
+
+## CCE-80941-8	Record Access Events to Audit Log Directory
+## The audit system should collect access events to read audit log directory.
+## The following audit rule will assure that access to audit log directory are collected.
+-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000 -F auid!=unset -F key=system-locale
+

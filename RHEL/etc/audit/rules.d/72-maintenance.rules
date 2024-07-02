@@ -1,3 +1,7 @@
+## CCE-86432-2	Record Attempts to perform maintenance activities
+## The Red Hat Enterprise Linux 8 operating system must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other
+## system-level access. Verify the operating system audits activities performed during nonlocal maintenance and diagnostic sessions.
+
 ## xccdf_org.ssgproject.content_rule_audit_sudo_log_events
 ## Record Attempts to perform maintenance activities
 

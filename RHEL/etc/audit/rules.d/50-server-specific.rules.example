@@ -1,0 +1,11 @@
+## Server-specific audit rules
+
+## Monitor web server configuration files
+-w /etc/httpd/ -p wa -k webserver
+
+## Monitor database configuration files
+-w /etc/mysql/ -p wa -k database
+
+## Monitor changes to specific application configurations
+-w /etc/myapp/ -p wa -k myappconfig
+

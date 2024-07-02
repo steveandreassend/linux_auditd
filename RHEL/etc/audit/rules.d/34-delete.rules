@@ -26,6 +26,7 @@
 ## Monitor the use of system calls associated with the deletion or renaming of files and file
 ## attributes. This configuration statement sets up monitoring for following system calls and
 ## tags them with the identifier "delete"
+
 ## Disabled because the STIG rules are more comprehensive
 
 ## -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
