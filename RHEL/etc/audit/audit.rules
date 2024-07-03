@@ -2,26 +2,68 @@
 -D
 -b 8192
 -f 1
--a always,exit -F arch=b32 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b32 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
--a always,exit -F arch=b64 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
+--backlog_wait_time 60000
+--loginuid-immutable
 -w /etc/sudoers -p wa -k actions
 -w /etc/sudoers.d/ -p wa -k actions
---backlog_wait_time 60000
 -w /etc/group -p wa -k audit_rules_usergroup_modification
 -w /etc/gshadow -p wa -k audit_rules_usergroup_modification
 -w /etc/security/opasswd -p wa -k audit_rules_usergroup_modification
 -w /etc/passwd -p wa -k audit_rules_usergroup_modification
 -w /etc/shadow -p wa -k audit_rules_usergroup_modification
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv
+-a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation
+-a always,exit -F arch=b64 -S execve -C euid!=uid -F auid!=unset -k user_emulation
+-a always,exit -F arch=b32 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access
+-a always,exit -F arch=b64 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access
+-a always,exit -F arch=b32 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
+-a always,exit -F arch=b64 -S creat -S ftruncate -S open -S open_by_handle_at -S openat -S truncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
+-a always,exit -F arch=b64 -S open -F a1&0100 -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=unsuccesful-create
+-a always,exit -F arch=b64 -S open -F a1&0100 -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=unsuccesful-create
+-a always,exit -F arch=b64 -S open -F a1&01003 -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=unsuccesful-modification
+-a always,exit -F arch=b64 -S open -F a1&01003 -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=unsuccesful-modification
+-a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=unsuccesful-access
+-a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=unsuccesful-access
 -a always,exit -F arch=b32 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
 -a always,exit -F arch=b64 -S rename -S renameat -S rmdir -S unlink -S unlinkat -F success=1 -F auid>=1000 -F auid!=unset -F key=delete
+-w /var/log/tallylog -p wa -k logins
 -w /var/log/lastlog -p wa -k logins
 -w /var/log/faillock -p wa -k logins
--a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
--a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -F key=modules
--a always,exit -F arch=b32 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
--a always,exit -F arch=b64 -S finit_module -S init_module -F auid>=1000 -F auid!=unset -F key=modules
+-w /var/run/faillock/ -p wa -k logins
+-w /var/run/utmp -p wa -k session
+-w /var/log/btmp -p wa -k session
+-w /var/log/wtmp -p wa -k session
+-a always,exit -F arch=b32 -S execve -F auid>=1000 -k execall
+-a always,exit -F arch=b64 -S execve -F auid>=1000 -k execall
+-w /etc/sysconfig/network -p wa -k system-locale
+-a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale
+-a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale
+-a always,exit -F arch=b32 -F path=/etc/issue -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/issue -F perm=wa -F key=system-locale
+-a always,exit -F arch=b32 -F path=/etc/issue.net -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/issue.net -F perm=wa -F key=system-locale
+-a always,exit -F arch=b32 -F path=/etc/hosts -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/hosts -F perm=wa -F key=system-locale
+-a always,exit -F arch=b32 -F path=/etc/hostname -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/hostname -F perm=wa -F key=system-locale
+-a always,exit -F arch=b32 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
+-a always,exit -F arch=b64 -F dir=/etc/NetworkManager/ -F perm=wa -F key=system-locale
+-a always,exit -F arch=b32 -F path=/etc/ssh/sshd_config -F perm=warx -F key=system-locale
+-a always,exit -F arch=b64 -F path=/etc/ssh/sshd_config -F perm=warx -F key=system-locale
+-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000 -F auid!=unset -F key=system-locale
+-w /etc/selinux/ -p wa -k MAC-policy
+-w /usr/share/selinux/ -p wa -k MAC-policy
+-w /var/log/sudo.log -p wa -k maintenance
+-a always,exit -F arch=b32 -S create_module -S delete_module -S finit_module -S init_module -S query_module -F auid>=1000 -F auid!=unset -F key=modules
+-a always,exit -F arch=b64 -S create_module -S delete_module -S finit_module -S init_module -S query_module -F auid>=1000 -F auid!=unset -F key=modules
+-w /sbin/insmod -p x -k modules
+-w /sbin/rmmod -p x -k modules
+-w /sbin/modprobe -p x -k modules
+-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -F key=mounts
+-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -F key=mounts
 -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=unset -F key=perm_mod
@@ -30,8 +72,6 @@
 -a always,exit -F arch=b64 -S fremovexattr -S fsetxattr -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
 -a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -F key=perm_mod
--a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
--a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
@@ -60,5 +100,16 @@
 -a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=setgid
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=setgid
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=setuid
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=setuid
+-a always,exit -F arch=b32 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k setuid
+-a always,exit -F arch=b64 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k setuid
+-a always,exit -F arch=b32 -F path=/usr/bin/systemd-run -F perm=x -F auid!=unset -F key=setuid
+-a always,exit -F arch=b64 -F path=/usr/bin/systemd-run -F perm=x -F auid!=unset -F key=setuid
+-a always,exit -F arch=b32 -F path=/usr/bin/pkexec -F perm=x -F key=setuid
+-a always,exit -F arch=b64 -F path=/usr/bin/pkexec -F perm=x -F key=setuid
+-a always,exit -F arch=b32 -S adjtimex,settimeofday,stime -F key=time-change
+-a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=time-change
+-a always,exit -F arch=b32 -S clock_settime -F a0=0x0 -F key=time-change
+-a always,exit -F arch=b64 -S clock_settime -F a0=0x0 -F key=time-change
+-a always,exit -F arch=b32 -F path=/etc/localtime -F perm=wa -F key=time-change
+-a always,exit -F arch=b64 -F path=/etc/localtime -F perm=wa -F key=time-change
+
