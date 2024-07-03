@@ -27,5 +27,4 @@
 ## and the advanced persistent threat.
 
 -a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation
--a always,exit -F arch=b64  S execve -C euid!=uid -F auid!=unset -k user_emulation
-
+-a always,exit -F arch=b64 -S execve -C euid!=uid -F auid!=unset -k user_emulation
