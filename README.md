@@ -37,24 +37,23 @@ The files in this directory are organized into groups with following meanings:
 The following rules files exist in this repo:
 ```
 10-base-config.rules - initial setup
-30-actions.rules
-31-audit_rules_usergroup_modification.rules
-32-activity.rules
-33-access.rules
-34-delete.rules
-35-logins.rules
-36-session.rules
-42-activity.rules - optional rules to track all user activity
-50-server-specific.rules.example - optional rules to track access to installed applications
-70-system_local.rules
+30-actions.rules - monitor sudo activity
+31-audit_rules_usergroup_modification.rules - monitor access to user and group configuration files
+32-activity.rules - log commands with elevated privileges or emulating another user
+33-access.rules - monitor unsuccessful file modification attempts
+34-delete.rules - log all deletion operations performed by users with auid (audit user ID) >= 1000, 
+35-logins.rules - tracking user logins attempts, logouts, and current logins
+42-activity.rules - OPTIONAL rules to track all user activity
+50-server-specific.rules.example - OPTIONAL rules to track access to installed applications
+70-system_local.rules - monitor home dirs, local cron job configs, local firewall configs, sensitive files, local scripts.
 71-MAC_policy.rules - tracking attempts to modify Mandatory Access Controls
-72-maintenance.rules
-73-modules.rules
-73-mounts.rules
-74-perm_mod.rules
-75-privileged.rules
-76-setgid.rules
-77-setuid.rules
+72-maintenance.rules - monitor all privileged maintenance activities
+73-modules.rules - monitor the loading and unloading of kernel modules
+73-mounts.rules - audit mount operations on the system
+74-perm_mod.rules - monitor changes to file permissions, ownership, and extended attributes
+75-privileged.rules - monitor the use of privileged commands and activities performed by users with elevated privileges
+76-setgid.rules - monitor and log changes to the set group ID (setgid) permissions on files and directories
+77-setuid.rules - monitor and log changes to the set user ID (setuid) permissions on files and directories
 78-time_change.rules - tracking attempts to change the sytem time
 99-finalize.rules - making the configuration immutable
 ```
