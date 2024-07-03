@@ -33,16 +33,10 @@ The files in this directory are organized into groups with following meanings:
 70 - System local rules
 90 - Finalize (immutable)
 ```
-
-Make sure the config and rules files have the correct permisions:
-```bash
-sudo chmod 0640 /etc/audit/rules.d/*.rules
-sudo chmod 0640 /etc/audit/auditd.conf
-```
 	
 The following rules files exist in this repo:
 ```
-10-base-config.rules
+10-base-config.rules - initial setup
 30-actions.rules
 31-audit_rules_usergroup_modification.rules
 32-activity.rules
@@ -50,10 +44,10 @@ The following rules files exist in this repo:
 34-delete.rules
 35-logins.rules
 36-session.rules
-42-activity.rules
-50-server-specific.rules.example
+42-activity.rules - optional rules to track all user activity
+50-server-specific.rules.example - optional rules to track access to installed applications
 70-system_local.rules
-71-MAC_policy.rules
+71-MAC_policy.rules - tracking attempts to modify Mandatory Access Controls
 72-maintenance.rules
 73-modules.rules
 73-mounts.rules
@@ -61,8 +55,14 @@ The following rules files exist in this repo:
 75-privileged.rules
 76-setgid.rules
 77-setuid.rules
-78-time_change.rules
-99-finalize.rules
+78-time_change.rules - tracking attempts to change the sytem time
+99-finalize.rules - making the configuration immutable
+```
+
+Make sure the config and rules files have the correct permisions:
+```bash
+sudo chmod 0640 /etc/audit/rules.d/*.rules
+sudo chmod 0640 /etc/audit/auditd.conf
 ```
 
 To view logs that match these records, use the key which matches the *.rules filename.
