@@ -43,6 +43,7 @@ The following rules files exist in this repo:
 33-access.rules - monitor unsuccessful file modification attempts
 34-delete.rules - log all deletion operations performed by users with auid (audit user ID) >= 1000, 
 35-logins.rules - tracking user logins attempts, logouts, and current logins
+36-session.rules - log any attempts to alter or access critical session files
 42-activity.rules - OPTIONAL rules to track all user activity
 50-server-specific.rules.example - OPTIONAL rules to track access to installed applications
 70-system_local.rules - monitor home dirs, local cron job configs, local firewall configs, sensitive files, local scripts.
