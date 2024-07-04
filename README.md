@@ -121,14 +121,14 @@ Configure Log Rotation
 To configure the Linux auditd service to rotate its logs on a daily basis, keeping only the latest 31 files (as per num_logs setting in auditd.conf):
 
 ```bash
-sudo cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
-sudo chmod -v +x /etc/cron.daily/auditd.cron
+# cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
+# chmod -v +x /etc/cron.daily/auditd.cron
 ```
 
 Configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight:
 
 ```bash
-sudo tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
+# tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
 ```
 
 The Linux auditd service controls only the size of its logs, but not the age of the logs, hence for controlling the retention period. Therefore it is necessary
