@@ -186,6 +186,7 @@ Python must be setup to run this script, for example:
 
 ```bash
 sudo yum update -y
+sudo yum install -y epel-release
 sudo yum groupinstall -y "Development Tools"
 sudo yum install -y python36-devel libjpeg-devel zlib-devel
 sudo yum install -y python3-pip
