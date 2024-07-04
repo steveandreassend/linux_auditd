@@ -61,9 +61,9 @@ sudo chmod 0640 /etc/audit/rules.d/*.rules
 sudo chmod 0640 /etc/audit/auditd.conf
 ```
 
-To view logs that match these records, use the key which matches the *.rules filename.
+To view logs that match these records, use the key which is specified within the corresponding *.rules file:
 ```bash
-   # ausearch -k logins
+# ausearch -k logins
 ```
 
 To generate the rules file:
@@ -74,20 +74,19 @@ in /etc/audit/rules.d location and compile them to create the resulting form of 
 file during the daemon startup (default configuration). Alternatively, the auditd daemon can use the auditctl utility to read
 audit rules from the /etc/audit/audit.rules configuration file during daemon startup, and load them into the kernel. The
 expected behavior is configured via the appropriate ExecStartPost directive setting in the /usr/lib/systemd/system/auditd.service
-configuration file. To instruct the auditd daemon to use the augenrules program to read audit rules (default configuration),
-use the following setting:
+configuration file.
 
+To instruct the auditd daemon to use the augenrules program to read audit rules (default configuration), use the following setting
+in the /usr/lib/systemd/system/auditd.service configuration file:
 ```
 ExecStartPost=-/sbin/augenrules --load
 ```
 
-in the /usr/lib/systemd/system/auditd.service configuration file.
-
-In order to instruct the auditd daemon to use the auditctl utility to read audit rules, use the following setting:
+To instruct the auditd daemon to use the auditctl utility to read audit rules, use the following setting
+in the /usr/lib/systemd/system/auditd.service configuration file:
 ```
 ExecStartPost=-/sbin/auditctl -R /etc/audit/audit.rules
 ```
-in the /usr/lib/systemd/system/auditd.service configuration file.
 
 The augenrules script reads rules located in the /etc/audit/rules.d/ directory and compiles them into an audit.rules file. This
 script processes all files that end with .rules in a specific order based on their natural sort order.
@@ -132,7 +131,8 @@ Configure auditd log rotation by scheduling Linux auditd service to rotate its l
 sudo tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
 ```
 
-The Linux auditd service controls only the size of its logs, but not the age of the logs, hence for controlling the retention period. Therefore it is necessary in the /etc/audit/auditd.conf file to disable log rotation based on file size (set max_log_file_action to IGNORE) and set num_logs to the number of days to keep + 1:
+The Linux auditd service controls only the size of its logs, but not the age of the logs, hence for controlling the retention period. Therefore it is necessary
+in the /etc/audit/auditd.conf file to disable log rotation based on file size (set max_log_file_action to IGNORE) and set num_logs to the number of days to keep + 1:
 
 ```
 max_log_file_action = IGNORE
@@ -142,4 +142,4 @@ num_logs = 31
 In the example above, the intent is to keep 30 days of Audit logging, hence it was set to 31 logs:
   30 days of archive + 1 log referring to the current day.
 
-The duration of online log retention will be mandated by your enterprise's CISO. Logs are typically archived to a SIEM service where they are processed, rather than on the host.
+The duration of online log retention will be mandated by your enterprise's CISO. Logs are typically relayed to a SIEM service where they are processed, rather than on the host.
