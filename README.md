@@ -99,12 +99,13 @@ script processes all files that end with .rules in a specific order based on the
 Activate Rules
 ======================
 
-To re-load the rules into the audit system if they are modified:
+Restarting auditd with systemctl is prevented if there are dependendies:
 ```bash
-   # auditctl -R /etc/audit/audit.rules
+# systemctl status auditd.service
+# systemctl list-dependencies auditd.service
 ```
 
-Restarting auditd will activate the auditing:
+Restarting the OS will activate the new auditing configuration:
 ```bash
 # reboot
 # systemctl status auditd
@@ -114,6 +115,12 @@ List the configured rules:
 ```bash
 # sudo auditctl -l
 ```
+
+To re-load the rules if they are modified:
+```bash
+# auditctl -R /etc/audit/audit.rules
+```
+
 
 Configure Log Rotation
 ======================
