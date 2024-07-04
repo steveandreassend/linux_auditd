@@ -93,43 +93,27 @@ The augenrules script reads rules located in the /etc/audit/rules.d/ directory a
 script processes all files that end with .rules in a specific order based on their natural sort order.
 
 ```bash
-   # augenrules --load
+# augenrules --load
+# cat /etc/audit/audit.rules
 ```
-
-To generate the consolidated `audit.rules` file from these individual rule files, you can use the `auditctl` command.
-Remember, changes made to the audit rules won't take effect until you reload them using `auditctl`. Additionally, ensure
-that the rules in the individual files (`/etc/audit/rules.d/*.rules`) are properly formatted and valid audit rules;
-otherwise, errors might occur when loading the rules into the audit system.
-
-1. Concatenate the rules from files in `/etc/audit/rules.d`:
-   
-   You can use the `cat` command to concatenate the rules from all the files within `/etc/audit/rules.d` into a single file.
-```bash
-   # cat /etc/audit/rules.d/*.rules > /etc/audit/audit.rules
-```
-   This command reads all files with a `.rules` extension in `/etc/audit/rules.d` and appends their contents to the `audit.rules` file in `/etc/audit`.
-
-2. Load the rules into the audit system:
-
-   Once you've consolidated the rules into `audit.rules`, you need to load them into the kernel using the `auditctl` command.
-```bash
-   # auditctl -R /etc/audit/audit.rules
-```
-   This command loads the rules from the `audit.rules` file into the running audit system.
-
 
 Activate Rules
 ======================
 
+Load the rules into the audit system:
+```bash
+   # auditctl -R /etc/audit/audit.rules
+```
+
 Restarting auditd will activate the rules:
 ```bash
-   $ sudo systemctl restart auditd
-   $ sudo systemctl status auditd
+# systemctl restart auditd
+# systemctl status auditd
 ```
 
 List the configured rules:
 ```bash
-   $ sudo auditctl -l
+# sudo auditctl -l
 ```
 
 Configure Log Rotation
