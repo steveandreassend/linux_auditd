@@ -99,14 +99,14 @@ script processes all files that end with .rules in a specific order based on the
 Activate Rules
 ======================
 
-Load the rules into the audit system:
+To re-load the rules into the audit system if they are modified:
 ```bash
    # auditctl -R /etc/audit/audit.rules
 ```
 
-Restarting auditd will activate the rules:
+Restarting auditd will activate the auditing:
 ```bash
-# systemctl restart auditd
+# reboot
 # systemctl status auditd
 ```
 
@@ -143,3 +143,48 @@ In the example above, the intent is to keep 30 days of Audit logging, hence it w
   30 days of archive + 1 log referring to the current day.
 
 The duration of online log retention will be mandated by your enterprise's CISO. Logs are typically relayed to a SIEM service where they are processed, rather than on the host.
+
+View Hourly Statistics
+======================
+
+To view the number of audit records per hour by key in the last 24 hours, run the provided script:
+```bash
+ ./hourlystats.py
+```
+
+Sample output:
+```
+Processing file: /var/log/audit/audit.log.4
+Processing file: /var/log/audit/audit.log.3
+Processing file: /var/log/audit/audit.log.2
+Processing file: /var/log/audit/audit.log.1
+Processing file: /var/log/audit/audit.log
+Key                                         00        01        02        03        04        05        06        07        08        09        10        11        12        13        14        15        16        17        18        19        20        21        22        23    
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+audit_rules_usergroup_modification      0         0         0         0         0         0         0         0         0         0         0         0         10        0         0         0         0         0         0         0         0         0         0         0         
+delete                                  0         0         0         0         0         0         0         0         0         0         0         0         4291      9953      0         0         0         0         0         0         0         0         0         0         
+execall                                 0         0         0         0         0         0         0         0         0         0         0         0         482       1966      0         0         0         0         0         0         0         0         0         0         
+execpriv                                0         0         0         0         0         0         0         0         0         0         0         0         0         1         0         0         0         0         0         0         0         0         0         0         
+logins                                  0         0         0         0         0         0         0         0         0         0         0         0         6         3         0         0         0         0         0         0         0         0         0         0         
+perm_mod                                0         0         0         0         0         0         0         0         0         0         0         0         12112     805       0         0         0         0         0         0         0         0         0         0         
+session                                 0         0         0         0         0         0         0         0         0         0         0         0         4         0         0         0         0         0         0         0         0         0         0         0         
+system-locale                           0         0         0         0         0         0         0         0         0         0         0         0         0         620       0         0         0         0         0         0         0         0         0         0         
+time-change                             0         0         0         0         0         0         0         0         0         0         0         0         8         30        0         0         0         0         0         0         0         0         0         0         
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                   0         0         0         0         0         0         0         0         0         0         0         0         16913     13378     0         0         0         0         0         0         0         0         0         0        
+```
+
+Prerequisites:
+Python must be setup to run this script, for example:
+
+```bash
+sudo yum update -y
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y python36-devel libjpeg-devel zlib-devel
+sudo yum install -y python3-pip
+```
+
+As a non-root user:
+```bash
+pip3 install matplotlib
+```
