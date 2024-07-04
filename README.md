@@ -57,8 +57,8 @@ The following rules files exist in this repo:
 
 Make sure the config and rules files have the correct permisions:
 ```bash
-sudo chmod 0640 /etc/audit/rules.d/*.rules
-sudo chmod 0640 /etc/audit/auditd.conf
+# chmod 0640 /etc/audit/rules.d/*.rules
+# chmod 0640 /etc/audit/auditd.conf
 ```
 
 To view logs that match these records, use the key which is specified within the corresponding *.rules file:
