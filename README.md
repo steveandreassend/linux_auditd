@@ -196,3 +196,124 @@ As a non-root user:
 ```bash
 pip3 install matplotlib
 ```
+
+Complementary Controls
+======================
+
+RHEL 8: Ensure Sudo Logfile Exists - sudo logfile - CCE-83601-5
+
+By default, RHEL and OL does not create the logfile that records each command that is executed with sudo.
+
+To apply the change:
+```bash
+sudo visudo
+Defaults logfile="/var/log/sudo.log"
+```
+
+Verify:
+```bash
+sudo visudo -c
+```
+
+Run a test:
+```bash
+sudo ls /root
+tail -n 10 /var/log/sudo.log
+```
+
+To configure log rotation for this file:
+```bash
+# vi /etc/logrotate.d/sudo
+
+/var/log/sudo.log {
+    daily                   # Rotate logs on a daily basis
+    rotate 8                # Keep at least 7 days of logs
+    compress                # Compress old log files
+    delaycompress           # Delay compression until the next rotation
+    notifempty              # Do not rotate the log if it is empty
+    missingok               # Continue without error if the log file is missing
+    postrotate
+        /usr/bin/killall -HUP rsyslogd # Send a SIGHUP to rsyslogd to reopen log files
+    endscript
+}
+
+# chmod 655 /etc/logrotate.d/sudo
+```
+
+RHEL 8: Set SSH Daemon LogLevel to VERBOSE - CCE-82420-1
+
+VERBOSE mode will log details of the SSH public key that was used to authenticate - the fingerprint, the key length, and the type of key.
+This is strongly advised when multiple keys are stored in authorized_keys for an account that is shared.
+
+To apply the change:
+```bash
+# vi /etc/ssh/sshd_config
+LogLevel VERBOSE
+
+# systemctl restart sshd
+```
+
+The SSHD log /var/log/secure is already covered by syslog rotation:
+```bash
+# vi /etc/logrotate.d/syslog
+/var/log/cron
+/var/log/maillog
+/var/log/messages
+/var/log/secure
+/var/log/spooler
+{
+    missingok
+    sharedscripts
+    postrotate
+        /usr/bin/systemctl -s HUP kill rsyslog.service >/dev/null 2>&1 || true
+    endscript
+}
+```
+
+The system default logrotate settings will apply. For example:
+```bash
+# cat /etc/logrotate.conf
+# see "man logrotate" for details
+# rotate log files weekly
+weekly
+
+# keep 4 weeks worth of backlogs
+rotate 4
+
+# create new (empty) log files after rotating old ones
+create
+
+# use date as a suffix of the rotated file
+dateext
+
+# uncomment this if you want your log files compressed
+#compress
+
+# RPM packages drop log rotation information into this directory
+include /etc/logrotate.d
+
+# system-specific logs may be also be configured here.
+```
+
+An example to configure custom settings for syslog to retain only 1 week:
+```bash
+# vi /etc/logrotate.d/syslog
+/var/log/cron
+/var/log/maillog
+/var/log/messages
+/var/log/secure
+/var/log/spooler
+/var/log/boot.log {
+    missingok
+    daily
+    rotate 8
+    compress
+    delaycompress
+    notifempty
+    create 0640 root utmp
+    sharedscripts
+    postrotate
+        /bin/kill -HUP $(cat /var/run/syslogd.pid 2>/dev/null) 2> /dev/null || true
+    endscript
+}
+```
