@@ -125,31 +125,45 @@ To re-load the rules if they are modified:
 Configure Log Rotation
 ======================
 
-To configure the Linux auditd service to rotate its logs on a daily basis, keeping only the latest 8 files (as per num_logs setting in auditd.conf):
+Like the Windows OS, Linux Auditd is designed to manage the log trail size based upon a specified size. It does not offer the capabilility
+out-of-the-box to retain the last X days of logs online. It is expected and mandated that security logs be relayed in near real-time to
+a centralized logging service (SIEM) for archiving and processing. Local online log storage is not intended for keeping a historical archive.
+Additionally, a Log Storm caused by a repeating security event could overflow the disk storage and cause a loss of a service.
+Therefore it is necessary to budget an amount of disk space in /var/log/audit for storing Auditd logs.
 
-```bash
-# cp -pv /usr/share/doc/audit-*/auditd.cron /etc/cron.daily/
-# chmod -v +x /etc/cron.daily/auditd.cron
+By default, the /etc/audit/auditd.conf in this package budgets for 1GB of disk space:
+```
+# Budget 1GB for total size size (128M * 8)
+# Logs will cycle 
+max_log_file = 128
+num_logs = 8
 ```
 
-Configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight:
+The package defaults to ROTATE to cycle through the log files by overwriting them:
+```
+## Configure auditd max_log_file_action Upon Reaching Maximum Log Size
+## The default action to take when the logs reach their maximum size is to rotate the log files, discarding the oldest one.
+## Possible values for ACTION are described in the auditd.conf man page. These include:
+## ignore
+## syslog
+## suspend
+## rotate
+## keep_logs
+## Set the ACTION to rotate to ensure log rotation occurs. This is the default. The setting is case-insensitive.
+
+## Automatically rotating logs (by setting this to rotate) minimizes the chances of the system unexpectedly running out of
+## disk space by being overwhelmed with log data. However, for systems that must never discard log data, or which use
+## external processes to transfer it and reclaim space, keep_logs can be employed.
+
+max_log_file_action = ROTATE
+```
+
+To configure auditd log rotation by scheduling Linux auditd service to rotate its logs every day at midnight:
 
 ```bash
 # tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
 ```
 
-The Linux auditd service controls only the size of its logs, but not the age of the logs, hence for controlling the retention period. Therefore it is necessary
-in the /etc/audit/auditd.conf file to disable log rotation based on file size (set max_log_file_action to IGNORE) and set num_logs to the number of days to keep + 1:
-
-```
-max_log_file_action = IGNORE
-num_logs = 8
-```
-
-In the example above, the intent is to keep 7 days of Audit logging, hence it was set to 8 logs:
-  7 days of archive + 1 log referring to the current day.
-
-The duration of online log retention will be mandated by your enterprise's CISO. Logs are typically relayed to a SIEM service where they are processed, rather than on the host.
 
 View Hourly Statistics
 ======================
