@@ -164,6 +164,13 @@ To configure auditd log rotation by scheduling Linux auditd service to rotate it
 # tee "/etc/cron.d/auditd" > /dev/null 2>&1 <<< "0 0 * * * root /bin/bash -lc 'service auditd rotate' > /dev/null 2>&1"
 ```
 
+Test log rotation:
+```bash
+# ls -la /var/log/audit/
+# tail -f /var/log/messages &
+# service auditd rotate
+```
+
 
 View Hourly Statistics
 ======================
