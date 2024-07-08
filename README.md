@@ -223,7 +223,8 @@ Complementary Controls
 
 RHEL 8: Ensure Sudo Logfile Exists - sudo logfile - CCE-83601-5
 
-By default, RHEL and OL does not create the logfile that records each command that is executed with sudo.
+By default, RHEL and Oracle Linux do not create the logfile that succinctly records each command that is executed with sudo.
+The following setting will effectively duplicate the logging of the Linux auditd rules provided in this package.
 
 To apply the change:
 ```bash
@@ -231,12 +232,12 @@ sudo visudo
 Defaults logfile="/var/log/sudo.log"
 ```
 
-Verify:
+Verify the configuration:
 ```bash
 sudo visudo -c
 ```
 
-Run a test:
+Run a test to verify sudo commands are being logged:
 ```bash
 sudo ls /root
 tail -n 10 /var/log/sudo.log
@@ -273,6 +274,12 @@ LogLevel VERBOSE
 
 # systemctl restart sshd
 ```
+
+To verify that fingerprints of authentication keys are being logged, establish a new SSH session, and in the first session run:
+```bash
+# grep "Accepted key" /var/log/secure
+```
+
 
 The SSHD log /var/log/secure is already covered by syslog rotation:
 ```bash
