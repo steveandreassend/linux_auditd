@@ -1,0 +1,11 @@
+## These rules are outside CIS and STIG official baselines for tracking security events.
+
+## The intention of these optional rules is to log all OS commands issued by users logging into the server
+## and the execution of their scripts. This provides end-to-end traceability of users accessing the OS.
+## This is particularly useful:
+## 1. During a forensic investigation during an incident where these rules might be temporarily enabled.
+## 2. To track of Break Glass events so that SysAdmin activity can be correlated with the technical justification of their approved access.
+
+## Record the execve system call for users above UID 1000 to catch all new program executions
+-a always,exit -F arch=b32 -S execve -F auid>=1000 -k execall
+-a always,exit -F arch=b64 -S execve -F auid>=1000 -k execall
