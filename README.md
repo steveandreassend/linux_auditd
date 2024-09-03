@@ -9,7 +9,7 @@ The CIS (Center for Internet Security) produces various cyber security related s
 Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
 It includes the auditd best practices for tracking LOTL techniques used by threat actors on the Linux OS as advised by the combined advisory of:
-* Australian Signals Directorate’s Australian Cyber Security Centre (ASD’s ACSC) in cooperation with the following international partners:
+* Australian Signals Directorate’s Australian Cyber Security Centre (ASD’s ACSC)
 * United States (US) Cybersecurity and Infrastructure Security Agency (CISA), the Federal Bureau of Investigation (FBI) and the National Security Agency (NSA)
 * United Kingdom (UK) National Cyber Security Centre (NCSC-UK)
 * Canadian Centre for Cyber Security (CCCS)
