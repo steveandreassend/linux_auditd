@@ -8,7 +8,9 @@ The CIS (Center for Internet Security) produces various cyber security related s
 
 Security Technical Implementation Guides are published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents.
 
-It is augmented by including the auditd best practices for tracking LOTL techniques used by threat actors on the Linux OS as advised by the combined advisory of:
+LOTL
+====
+The auditing rules are optionally augmented by including the auditd best practices for tracking LOTL techniques used by threat actors on the Linux OS, as advised by the combined advisory of:
 * Australian Signals Directorate’s Australian Cyber Security Centre (ASD’s ACSC)
 * United States (US) Cybersecurity and Infrastructure Security Agency (CISA), the Federal Bureau of Investigation (FBI) and the National Security Agency (NSA)
 * United Kingdom (UK) National Cyber Security Centre (NCSC-UK)
@@ -19,6 +21,7 @@ It is augmented by including the auditd best practices for tracking LOTL techniq
 * Singapore Cyber Security Agency (CSA)
 * The Netherlands General Intelligence and Security Service (AIVD) and Military Intelligence and Security Service (MIVD).
 
+These auditing rules are found in the file 41-lotl.rules. The rules are categorized and labelled according to a corresponding MITRE ATT&CK index of Tactics and Techniques identified by the intelligence community.
 
 References
 ==========
