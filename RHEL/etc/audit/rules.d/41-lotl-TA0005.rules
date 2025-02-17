@@ -1,0 +1,258 @@
+## LOLBins Used for Defense Evasion
+##   Ref: https://attack.mitre.org/tactics/TA0005/
+
+## The adversary is trying to avoid being detected.
+
+## Defense Evasion consists of techniques that adversaries use to avoid detection throughout their
+## compromise. Techniques used for defense evasion include uninstalling/disabling security software
+## or obfuscating/encrypting data and scripts. Adversaries also leverage and abuse trusted processes
+## to hide and masquerade their malware. Other tactics’ techniques are cross-listed here when those
+## techniques include the added benefit of subverting defenses.
+
+## T1562 - Impair Defenses: Adversaries may disable or modify security software to avoid detection.
+##   Ref: https://attack.mitre.org/techniques/T1562/
+
+## T1218 - System Binary Proxy Execution: Adversaries may use trusted system binaries to proxy execution of malicious code.
+##   Ref: https://attack.mitre.org/techniques/T1218/
+
+##  T1070 - Indicator Removal on Host: Adversaries may delete or alter generated artifacts on a host system to remove evidence of their presence.
+##   Ref: https://attack.mitre.org/techniques/T1070/
+
+
+#############################################
+##  https://attack.mitre.org/techniques/T1070/
+##  T1070 - Indicator Removal on Host: Adversaries may delete or alter generated artifacts on a host system to remove evidence of their presence.
+
+## Adversaries may delete or modify artifacts generated within systems to remove evidence of their presence or hinder defenses.
+## Various artifacts may be created by an adversary or something that can be attributed to an adversary’s actions. Typically
+## these artifacts are used as defensive indicators related to monitored events, such as strings from downloaded files, logs
+## that are generated from user actions, and other data analyzed by defenders. Location, format, and type of artifact
+## (such as command or login history) are often specific to each platform.
+
+## Removal of these indicators may interfere with event collection, reporting, or other processes used to detect intrusion activity.
+## This may compromise the integrity of security solutions by causing notable events to go unreported. This activity may also impede
+## forensic analysis and incident response, due to lack of sufficient data to determine what occurred.
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/002/
+## Indicator Removal: Clear Linux or Mac System Logs
+
+## Adversaries may clear system logs to hide evidence of an intrusion. macOS and Linux both keep track of system or user-initiated actions
+## via system logs. The majority of native system logging is stored under the /var/log/ directory. Subfolders in this directory categorize
+## logs by their related functions, such as:
+## /var/log/messages:: General and system-related messages
+## /var/log/secure or /var/log/auth.log: Authentication logs
+## /var/log/utmp or /var/log/wtmp: Login records
+## /var/log/kern.log: Kernel logs
+## /var/log/cron.log: Crond logs
+## /var/log/maillog: Mail server logs
+## /var/log/httpd/: Web server access and error logs
+
+## Monitor Access to General and System-Related Messages
+-a always,exit -F path=/var/log/messages -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Authentication Logs
+-a always,exit -F path=/var/log/secure -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F path=/var/log/auth.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Login Records
+-a always,exit -F path=/var/log/utmp -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F path=/var/log/wtmp -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Kernel Logs
+-a always,exit -F path=/var/log/kern.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Crond Logs
+-a always,exit -F path=/var/log/cron.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Mail Server Logs
+-a always,exit -F path=/var/log/maillog -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+## Monitor Access to Web Server Logs
+-a always,exit -F dir=/var/log/httpd/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/003/
+## Indicator Removal: Clear Command History
+
+## In addition to clearing system logs, an adversary may clear the command history of a compromised account to
+## conceal the actions undertaken during an intrusion. Various command interpreters keep track of the commands
+## users type in their terminal so that users can retrace what they've done.
+
+## On Linux and macOS, these command histories can be accessed in a few different ways. While logged in, this command history
+## is tracked in a file pointed to by the environment variable HISTFILE. When a user logs off a system, this information is
+## flushed to a file in the user's home directory called ~/.bash_history. The benefit of this is that it allows users to go
+## back to commands they've used before in different sessions.
+
+## Adversaries may delete their commands from these logs by manually clearing the history (history -c) or deleting the bash history file rm ~/.bash_history.
+-a always,exit -F dir=/ -F name=.bash_history -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Command_History
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/004/
+## Indicator Removal: File Deletion
+
+## Adversaries may delete files left behind by the actions of their intrusion activity. Malware, tools, or other non-native
+## files dropped or created on a system by an adversary (ex: Ingress Tool Transfer) may leave traces to indicate to what was
+## done within a network and how. Removal of these files can occur during an intrusion, or as part of a post-intrusion process
+## to minimize the adversary's footprint.
+
+## There are tools available from the host operating system to perform cleanup, but adversaries may use other tools as well.
+## Examples of built-in Command and Scripting Interpreter functions include del on Windows and rm or unlink on Linux and macOS.
+
+## Monitor execution of the rm command
+-a always,exit -F path=/bin/rm -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
+
+## Monitor execution of the unlink command
+-a always,exit -F path=/bin/unlink -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/006/
+## Indicator Removal: Timestomp
+
+## Adversaries may modify file time attributes to hide new files or changes to existing files. Timestomping is a technique
+## that modifies the timestamps of a file (the modify, access, create, and change times), often to mimic files that are in the
+## same folder and blend malicious files with legitimate files.
+
+## Both the $STANDARD_INFORMATION ($SI) and $FILE_NAME ($FN) attributes record times in a Master File Table (MFT) file.
+## $SI (dates/time stamps) is displayed to the end user, including in the File System view, while $FN is dealt with by the kernel.
+
+## Modifying the $SI attribute is the most common method of timestomping because it can be modified at the user level using API calls.
+## $FN timestomping, however, typically requires interacting with the system kernel or moving or renaming a file.
+
+## Adversaries modify timestamps on files so that they do not appear conspicuous to forensic investigators or file analysis tools.
+## In order to evade detections that rely on identifying discrepancies between the $SI and $FN attributes, adversaries may also engage
+## in "double timestomping" by modifying times on both attributes simultaneously.
+
+## Timestomping may be used along with file name Masquerading to hide malware and tools.
+
+## Monitor changes to file timestamps using touch command
+-a always,exit -F path=/usr/bin/touch -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+
+## Monitor changes to file timestamps using debugfs
+-a always,exit -F path=/sbin/debugfs -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+
+## Monitor changes to file timestamps using setfattr
+-a always,exit -F path=/usr/bin/setfattr -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+
+## Monitor changes to file timestamps using stat
+-a always,exit -F path=/usr/bin/stat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/007/
+## Indicator Removal: Clear Network Connection History and Configurations
+
+## Adversaries may clear or remove evidence of malicious network connections in order to clean up traces of
+## their operations. Configuration settings as well as various artifacts that highlight connection history may
+## be created on a system and/or in application logs from behaviors that require network connections, such as
+## Remote Services or External Remote Services. Defenders may use these artifacts to monitor or otherwise
+## analyze network connections created by adversaries.
+
+## Monitor Execution of Commands that Clear Network Connection History
+## Monitor execution of the `history` command
+-a always,exit -F path=/usr/bin/history -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+
+## Monitor execution of the `last` command
+-a always,exit -F path=/usr/bin/last -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+
+## Monitor execution of the `lastlog` command
+-a always,exit -F path=/usr/bin/lastlog -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+
+## Monitor Access to Network Configuration Files
+-a always,exit -F path=/etc/hosts -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F path=/etc/resolv.conf -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F path=/etc/hostname -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+
+## Monitor Access to System Logs Related to Network Connections
+-a always,exit -F path=/var/log/syslog -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F path=/var/log/messages -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F path=/var/log/auth.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/008/
+## Indicator Removal: Clear Mailbox Data
+
+## Adversaries may modify mail and mail application data to remove evidence of their activity. Email applications allow
+## users and other programs to export and delete mailbox data via command line tools or use of APIs. Mail application
+## data can be emails, email metadata, or logs generated by the application or operating system, such as export requests.
+
+## Adversaries may manipulate emails and mailbox data to remove logs, artifacts, and metadata, such as evidence of
+## Phishing/Internal Spearphishing, Email Collection, Mail Protocols for command and control, or email-based exfiltration
+## such as Exfiltration Over Alternative Protocol. For example, to remove evidence on Exchange servers adversaries have
+## used the ExchangePowerShell PowerShell module, including Remove-MailboxExportRequest to remove evidence of mailbox exports.
+## On Linux and macOS, adversaries may also delete emails through a command line utility called mail or use AppleScript to
+## interact with APIs on macOS.
+
+## Adversaries may also remove emails and metadata/headers indicative of spam or suspicious activity (for example, through
+## the use of organization-wide transport rules) to reduce the likelihood of malicious emails being detected by security products.
+
+## Monitor Execution of Mailbox Management Commands
+## Monitor execution of the mail command
+-a always,exit -F path=/usr/bin/mail -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+
+## Monitor execution of the mutt command
+-a always,exit -F path=/usr/bin/mutt -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+
+## Monitor execution of the mailx command
+-a always,exit -F path=/usr/bin/mailx -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+
+## Monitor Access to Mailbox Files
+## Monitor access to mailbox files in /var/mail
+-a always,exit -F dir=/var/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+
+## Monitor access to mailbox files in /var/spool/mail
+-a always,exit -F dir=/var/spool/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/009/
+## Indicator Removal: Clear Persistence
+
+##Monitor Execution of Commands that Modify Persistence Mechanisms
+## Monitor execution of the systemctl command (used to manage systemd services)
+-a always,exit -F path=/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+## Monitor execution of the crontab command (used to manage cron jobs)
+-a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+## Monitor execution of the at command (used to schedule tasks)
+-a always,exit -F path=/usr/bin/at -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+## Monitor Access to Common Persistence Files and Directories
+## Monitor access to systemd service files
+-a always,exit -F dir=/etc/systemd/system/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+## Monitor access to cron job files
+-a always,exit -F dir=/etc/cron.d/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+-a always,exit -F path=/etc/crontab -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+## Monitor access to at job files
+-a always,exit -F dir=/var/spool/cron/atjobs/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1070/010/
+## Indicator Removal: Relocate Malware
+
+## Once a payload is delivered, adversaries may reproduce copies of the same malware on the victim system to remove
+## evidence of their presence and/or avoid defenses. Copying malware payloads to new locations may also be combined
+## with File Deletion to cleanup older artifacts.
+
+## Relocating malware may be a part of many actions intended to evade defenses. For example, adversaries may copy and
+## rename payloads to better blend into the local environment (i.e., Match Legitimate Name or Location). Payloads may
+## also be repositioned to target File/Path Exclusions as well as specific locations associated with establishing Persistence.
+
+## Relocating malicious payloads may also hinder defensive analysis, especially to separate these payloads from earlier events
+## (such as User Execution and Phishing) that may have generated alerts or otherwise drawn attention from defenders.
+
+## Monitor execution of the mv command (used to move files)
+-a always,exit -F path=/bin/mv -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+
+## Monitor execution of the cp command (used to copy files)
+-a always,exit -F path=/bin/cp -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+
+## Monitor execution of the rsync command (used to synchronize files)
+-a always,exit -F path=/usr/bin/rsync -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware

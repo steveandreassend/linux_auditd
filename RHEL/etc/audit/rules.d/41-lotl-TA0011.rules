@@ -1,0 +1,272 @@
+## Table 5: LOLBins Used for Command and Control
+##   Ref: https://attack.mitre.org/tactics/TA0011/
+
+## The adversary is trying to communicate with compromised systems to control them.
+
+## Command and Control consists of techniques that adversaries may use to communicate with systems
+## under their control within a victim network. Adversaries commonly attempt to mimic normal, expected
+## traffic to avoid detection. There are many ways an adversary can establish command and control with
+## various levels of stealth depending on the victim’s network structure and defenses.
+
+## T1090 - Proxy
+DONE ##   Ref: https://attack.mitre.org/techniques/T1090/
+
+## T1562.001 - Impair Defenses: Disable or Modify Tools
+DONE ##   Ref: https://attack.mitre.org/techniques/T1562/001/
+
+## T1562.004 - System Firewall
+DONE ##   Ref: https://attack.mitre.org/techniques/T1562/004/
+
+## T1071 - Application Layer Protocol
+##   Ref: https://attack.mitre.org/techniques/T1071/
+
+## T1021.004 - Remote Services: SSH
+##   Ref: https://attack.mitre.org/techniques/T1021/004/
+## Covered under Lateral Movement
+
+##  T1105 - Ingress Tool Transfer: Adversaries may transfer tools or other files from an external system into a compromised environment.
+##   Ref: https://attack.mitre.org/techniques/T1105/
+## Mostly covered under Exfiltration
+
+## T1071 - Application Layer Protocol
+##   Ref: https://attack.mitre.org/techniques/T1071/
+
+#############################################
+## T1090 - Proxy
+##   Ref: https://attack.mitre.org/techniques/T1090/
+
+## Monitor for Proxy Tools Execution:
+
+## Detect execution of common proxy tools like HTRAN, ZXProxy, and ZXPortMap.
+-a always,exit -F path=/usr/bin/HTRAN -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Tools
+-a always,exit -F path=/usr/bin/ZXProxy -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Tools
+-a always,exit -F path=/usr/bin/ZXPortMap -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Tools
+
+## Monitor execution of known proxy tools (Tor, ProxyChains)
+-a always,exit -F path=/usr/bin/proxychains -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Tools
+-a always,exit -F path=/usr/bin/tor -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Tools
+
+## Monitor for Changes to Proxy Configuration Files:
+
+## Detect modifications to ProxyChains configuration file
+-a always,exit -F path=/etc/proxychains.conf -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Config
+
+## Detect modifications to Tor configuration file
+-a always,exit -F path=/etc/tor/torrc -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Config
+
+## Detect modifications to system-wide proxy settings
+-a always,exit -F path=/etc/environment -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Config
+
+## Detect modifications to dante SOCKS proxy configuration
+-a always,exit -F path=/etc/danted.conf -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1090_Proxy_Config
+
+## Monitor for Network Configuration Changes:
+
+## Detect changes to network interfaces and routing tables.
+-w /etc/sysconfig/network-scripts/ -p wa -k network_config
+-w /etc/sysconfig/network -p wa -k network_config
+
+## Legacy network configurations (RHEL 7 and below)
+-w /etc/sysconfig/network-scripts/ -p wa -k T1090_Network_Config
+-w /etc/sysconfig/network -p wa -k T1090_Network_Config
+
+## RHEL 8+ uses NetworkManager (Monitor configuration changes)
+-w /etc/NetworkManager/ -p wa -k T1090_Network_Config
+-w /etc/NetworkManager/system-connections/ -p wa -k T1090_Network_Config
+
+## Monitor for Unusual Network Connections:
+
+## [OUTSIDE Auditd scope]
+## This host monitoring is only provided for reference, it is best handled externally using IPS for obvious reasons...
+## Monitor for Unusual Network Connections using Netfilter (iptables or nftables)
+## Detect connections to unusual or suspicious IP addresses and ports.
+## Use iptables/nftables for better network monitoring.
+## Log outbound connections to uncommon ports (adjust IPs/ports as needed)
+
+## Example: Log outbound traffic on HTTP/S
+## With iptables:
+## iptables -A OUTPUT -p tcp --dport 80 -m owner --uid-owner 1000 -j LOG --log-prefix "Suspicious_HTTP: "
+## iptables -A OUTPUT -p tcp --dport 443 -m owner --uid-owner 1000 -j LOG --log-prefix "Suspicious_HTTPS: "
+## With nftables:
+## nft add table inet proxy_monitor
+## nft add chain inet proxy_monitor output { type filter hook output priority 0 \; }
+## nft add rule inet proxy_monitor output ip daddr 192.168.1.0/24 tcp dport {80, 443} log prefix "Suspicious_Proxy "
+
+#############################################
+## T1562.001 - Impair Defenses: Disable or Modify Tools
+##   Ref: https://attack.mitre.org/techniques/T1562/001/
+##        https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1562.001/T1562.001.md
+
+## Adversaries may modify and/or disable security tools to avoid possible detection of their malware/tools and activities.
+
+## Atomic Test #1 - Disable syslog
+-w /etc/rsyslog.conf -p wa -k T1562.001_Impair_Defenses
+-w /etc/syslog.conf -p wa -k T1562.001_Impair_Defenses
+-a always,exit -F arch=b64 -S kill -F a0=SIGTERM -F a0=SIGKILL -F a0=SIGSTOP -F a0=SIGINT -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+-a always,exit -F path=/usr/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #3 - Disable Carbon Black (Cb Response)
+-w /opt/carbonblack/ -p wa -k T1562.001_Impair_Defenses
+-a always,exit -F path=/opt/carbonblack/bin/cbagentd -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+-a always,exit -F path=/usr/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #4 - Disable SELinux
+-w /etc/selinux/config -p wa -k T1562.001_Impair_Defenses
+-a always,exit -F path=/usr/sbin/setenforce -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #5 - Stop CrowdStrike Falcon on Linux
+-w /opt/CrowdStrike/ -p wa -k T1562.001_Impair_Defenses
+-a always,exit -F path=/opt/CrowdStrike/falconctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+-a always,exit -F path=/usr/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #39 - Clear Bash History
+##-w /root/.bash_history -p wa -k T1562.001_Impair_Defenses
+##-w /home/*/.bash_history -p wa -k T1562.001_Impair_Defenses
+## Covered in Unsecured Credentials: Bash History
+
+## Atomic Test #40 - Suspend Bash History
+-w /etc/profile -p wa -k T1562.001_Impair_Defenses
+-w /etc/bash.bashrc -p wa -k T1562.001_Impair_Defenses
+
+## Atomic Test #41 - Reboot Linux Host via Kernel System Request
+-a always,exit -F arch=b64 -S reboot -k T1562.001_Impair_Defenses
+-a always,exit -F arch=b64 -S kexec_load -k T1562.001_Impair_Defenses
+
+## Atomic Test #42 - Clear Paging Cache
+-a always,exit -F path=/proc/sys/vm/drop_caches -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #43 - Disable Memory Swap
+-a always,exit -F path=/proc/sys/vm/swappiness -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Atomic Test #47 - Tamper with Microsoft Defender ATP (MDATP)
+-w /etc/opt/microsoft/mdatp/ -p wa -k T1562.001_Impair_Defenses
+-a always,exit -F path=/etc/opt/microsoft/mdatp/sbin/mdatp -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+-a always,exit -F path=/usr/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1562.001_Impair_Defenses
+
+## Detect modifications to logrotate.conf (to clear logs)
+-w /etc/logrotate.conf -p wa -k T1562.001_Impair_Defenses
+-w /etc/logrotate.d/ -p wa -k T1562.001_Impair_Defenses
+
+#############################################
+## T1562.004 - System Firewall
+##   Ref: https://attack.mitre.org/techniques/T1562/004/
+##        https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1562.004/T1562.004.md
+
+## Monitor execution of firewall modification commands
+-a always,exit -F arch=b64 -S execve -F comm=firewall-cmd -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Mod
+-a always,exit -F arch=b64 -S execve -F comm=iptables -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Mod
+-a always,exit -F arch=b64 -S execve -F comm=ip6tables -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Mod
+-a always,exit -F arch=b64 -S execve -F comm=nft -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Mod
+-a always,exit -F arch=b64 -S execve -F comm=ufw -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Mod
+-a always,exit -F arch=b64 -S execve -F comm=pfctl -F auid>=1000 -F auid!=4294967295 -k T1562.004_Packet_Filter_Mod
+
+## Monitor modifications to firewall configuration files
+-w /etc/firewalld/ -p wa -k T1562.004_Firewall_Config
+-w /etc/firewalld/zones/ -p wa -k T1562.004_Firewall_Config
+-w /etc/sysconfig/iptables -p wa -k T1562.004_Firewall_Config
+-w /etc/sysconfig/ip6tables -p wa -k T1562.004_Firewall_Config
+-w /etc/sysconfig/nftables.conf -p wa -k T1562.004_Firewall_Config
+-w /etc/nftables/ -p wa -k T1562.004_Firewall_Config
+-w /var/lib/iptables/ -p wa -k T1562.004_Firewall_Config
+-w /etc/pf.conf -p wa -k T1562.004_Packet_Filter_Config
+-w /etc/iptables/rules.v4 -p wa -k T1562.004_Firewall_Config
+-w /etc/iptables/rules.v6 -p wa -k T1562.004_Firewall_Config
+
+## Monitor modifications to UFW firewall configuration files
+-w /etc/ufw/user.rules -p wa -k T1562.004_UFW_Config
+-w /etc/ufw/before.rules -p wa -k T1562.004_UFW_Config
+-w /etc/ufw/after.rules -p wa -k T1562.004_UFW_Config
+-w /etc/ufw/ufw.conf -p wa -k T1562.004_UFW_Config
+-w /etc/default/ufw -p wa -k T1562.004_UFW_Config
+-w /etc/ufw/sysctl.conf -p wa -k T1562.004_UFW_Config
+
+## Monitor attempts to change state of firewall services (without filtering specific actions)
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F argv[1]=firewalld -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Service_Modify
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F argv[1]=iptables -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Service_Modify
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F argv[1]=nftables -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Service_Modify
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F argv[1]=ufw -F auid>=1000 -F auid!=4294967295 -k T1562.004_Firewall_Service_Modify
+
+## Monitor systemd service status modifications of firewall services
+-w /etc/systemd/system/firewalld.service -p wa -k T1562.004_Firewall_Service_Stop
+-w /etc/systemd/system/iptables.service -p wa -k T1562.004_Firewall_Service_Stop
+-w /etc/systemd/system/nftables.service -p wa -k T1562.004_Firewall_Service_Stop
+-w /etc/systemd/system/ufw.service -p wa -k T1562.004_UFW_Service_Stop
+
+## Monitor modifications to sysctl settings that weaken firewall protections
+-w /etc/sysctl.conf -p wa -k T1562.004_Kernel_Network_Security
+-w /etc/sysctl.d/ -p wa -k T1562.004_Kernel_Network_Security
+
+## Detect commands that modify kernel parameters for networking
+-a always,exit -F arch=b64 -S execve -F comm=sysctl -F auid>=1000 -F auid!=4294967295 -k T1562.004_Kernel_Network_Security
+
+#############################################
+## T1105 - Ingress Tool Transfer
+##   Ref: https://attack.mitre.org/techniques/T1105/
+##        https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1105/T1105.md
+
+## Adversaries may transfer tools or other files from an external system into a compromised environment.
+
+## Monitor execution of common file transfer utilities
+##-a always,exit -F arch=b64 -S execve -F comm=wget -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=curl -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=scp -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=sftp -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=rsync -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=ftp -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+## Covered by Exfiltration
+
+## Monitor execution of package managers (could be used to install malicious tools)
+-a always,exit -F arch=b64 -S execve -F comm=apt -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=dnf -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=yum -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=pip -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=brew -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+
+## Monitor execution of common compression and extraction utilities
+##-a always,exit -F arch=b64 -S execve -F comm=tar -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=zip -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=unzip -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=gzip -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=bzip2 -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=xz -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+## Covered by Collection
+
+## Monitor execution of scripting languages that can be used to download files
+##-a always,exit -F arch=b64 -S execve -F comm=python3 -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=perl -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+##-a always,exit -F arch=b64 -S execve -F comm=bash -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+## Covered by OS Credential Dumping
+
+## Monitor execution of netcat-like tools used for file transfers
+-a always,exit -F arch=b64 -S execve -F comm=nc -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=ncat -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=socat -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=openssl -F auid>=1000 -F auid!=4294967295 -k T1105_Ingress_Tool_Transfer
+
+#############################################
+## T1071 - Application Layer Protocol
+##   Ref: https://attack.mitre.org/techniques/T1071/
+
+## T1071.001 - Web Protocols (HTTP/S, WebSockets)
+##-a always,exit -F arch=b64 -S execve -F comm=curl -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F comm=wget -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+## Covered by Exfiltration
+-a always,exit -F arch=b64 -S execve -F comm=http -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=lynx -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=elinks -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+
+## T1071.004 - Domain Name System (DNS Tunneling, nslookup, dig, host)
+-a always,exit -F arch=b64 -S execve -F comm=nslookup -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+-a always,exit -F arch=b64 -S execve -F comm=dig -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+-a always,exit -F arch=b64 -S execve -F comm=host -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+-a always,exit -F arch=b64 -S execve -F comm=dnscat2 -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+-a always,exit -F arch=b64 -S execve -F comm=dnschef -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+
+## T1071.005 - Other Application Layer Protocols (IRC, Telegram, Slack, Discord, Netcat)
+-a always,exit -F arch=b64 -S execve -F comm=irssi -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=weechat -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=telegram-cli -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=slack -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=discord -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=nc -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+-a always,exit -F arch=b64 -S execve -F comm=socat -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols

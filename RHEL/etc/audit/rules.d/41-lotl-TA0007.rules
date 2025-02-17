@@ -1,0 +1,33 @@
+## Table 3: LOLBins Used for Discovery [TA0007]
+##   Ref: https://attack.mitre.org/tactics/TA0007/
+
+## The adversary is trying to figure out your environment.
+
+## Discovery consists of techniques an adversary may use to gain knowledge about the system and internal
+## network. These techniques help adversaries observe the environment and orient themselves before deciding
+## how to act. They also allow adversaries to explore what they can control and what’s around their entry
+## point in order to discover how it could benefit their current objective. Native operating system tools
+## are often used toward this post-compromise information-gathering objective.
+
+## T1016 - System Network Configuration Discovery
+##   Ref: https://attack.mitre.org/techniques/T1016/
+
+## T1083 - File and Directory Discovery
+##   Ref: https://attack.mitre.org/techniques/T1083/
+
+## T1518 - Software Discovery
+##   Ref: https://attack.mitre.org/techniques/T1518/
+
+## T1007 - System Service Discovery
+##   Ref: https://attack.mitre.org/techniques/T1007/
+
+## T1057 - Process Discovery
+##   Ref: https://attack.mitre.org/techniques/T1057/
+
+## T1033 - System Owner/User Discovery
+##   Ref: https://attack.mitre.org/techniques/T1033/
+
+## T1082 - System Information Discovery
+##   Ref: https://attack.mitre.org/techniques/T1082/
+
+#############################################

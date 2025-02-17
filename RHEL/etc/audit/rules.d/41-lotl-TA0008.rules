@@ -1,0 +1,24 @@
+## Table 4: LOLBins Used for Lateral Movement
+##   Ref: https://attack.mitre.org/tactics/TA0008/
+
+## The adversary is trying to move through your environment.
+
+## Lateral Movement consists of techniques that adversaries use to enter and control remote systems on a network.
+## Following through on their primary objective often requires exploring the network to find their target and
+## subsequently gaining access to it. Reaching their objective often involves pivoting through multiple systems
+## and accounts to gain. Adversaries might install their own remote access tools to accomplish Lateral Movement
+## or use legitimate credentials with native network and operating system tools, which may be stealthier.
+
+## T1021.001 - Remote Services: Remote Desktop Protocol
+##   Ref:
+
+## T1021.005 - Remote Services: VNC
+##   Ref:
+
+## T1071 - Application Layer Protocol
+##   Ref:
+
+## T1021.004 - Remote Services: SSH
+##   Ref:
+
+#############################################

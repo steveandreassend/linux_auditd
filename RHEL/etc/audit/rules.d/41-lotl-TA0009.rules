@@ -1,0 +1,72 @@
+## LOLBins Used for Collection
+##   Ref: https://attack.mitre.org/tactics/TA0009/
+
+## The adversary is trying to gather data of interest to their goal.
+
+## Collection consists of techniques adversaries may use to gather information and the sources information is collected
+## from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting
+## data is to either steal (exfiltrate) the data or to use the data to gain more information about the target environment.
+## Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include
+## capturing screenshots and keyboard input.
+
+##   T1560 - Archive Collected Data: Adversaries may compress and archive collected data to facilitate exfiltration.
+##   Ref: https://attack.mitre.org/techniques/T1560/
+
+#############################################
+## T1560 Archive Collected Data
+## https://attack.mitre.org/techniques/T1560/
+
+## An adversary may compress and/or encrypt data that is collected prior to exfiltration. Compressing the data can help to obfuscate the
+## collected data and minimize the amount of data sent over the network.[1] Encryption can be used to hide information that is being
+## exfiltrated from detection or make exfiltration less conspicuous upon inspection by a defender.
+
+## Both compression and encryption are done prior to exfiltration, and can be performed using a utility, 3rd party library, or custom method.
+
+## DS0017	Command	Command Execution
+## Monitor executed commands and arguments for actions that will aid in compression or encrypting data that is collected prior to exfiltration, such as tar.
+
+## DS0009	Process	Process Creation
+## Monitor for newly constructed processes and/or command-lines that aid in compression or encrypting data that is collected prior to exfiltration, such as 7-Zip, WinRAR, and WinZip.
+
+## Monitor execution of compression and archiving utilities
+-a always,exit -F path=/usr/bin/zip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/bin/gzip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/bin/tar -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/bin/bzip2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/lzip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/lzip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/7z -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/lz4 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/lz4 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/lzop -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/lzop -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/plzip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/plzip -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/pbzip2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/pbzip2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/lbzip2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/lbzip2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/pixz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/pixz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/pigz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/pigz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/bin/unpigz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/unpigz -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+-a always,exit -F path=/usr/bin/zstd -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F path=/usr/local/bin/zstd -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+
+## Monitor execution of gzexe (used to compress executables)
+-a always,exit -F arch=b32 -F path=/usr/bin/gzexe -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F arch=b64 -F path=/usr/bin/gzexe -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F arch=b32 -F path=/usr/sbin/gzexe -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data
+-a always,exit -F arch=b64 -F path=/usr/sbin/gzexe -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1560_Archive_Collected_Data

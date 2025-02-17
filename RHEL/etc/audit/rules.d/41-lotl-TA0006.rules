@@ -1,0 +1,226 @@
+## Table 2: LOLBins Used for Credential Access [TA0006]
+## Ref: https://attack.mitre.org/tactics/TA0006/
+
+## Credential Access consists of techniques for stealing credentials like account names and passwords.
+## Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials
+## can give adversaries access to systems, make them harder to detect, and provide the opportunity to create
+## more accounts to help achieve their goals.
+
+##  T1003 - OS Credential Dumping: Adversaries may attempt to dump credentials to obtain account login information.
+##   Ref: https://attack.mitre.org/techniques/T1003/
+
+##  T1552 - Unsecured Credentials: Adversaries may search compromised systems to find and obtain insecurely stored credentials.
+##   Ref: https://attack.mitre.org/techniques/T1552/
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1003/
+## T1003 - OS Credential Dumping: Adversaries may attempt to dump credentials to obtain account login information, which can be used to access systems, services, and data.
+
+## Monitor execution of gcore (used to generate core dumps)
+-a always,exit -F path=/usr/bin/gcore -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of gdb (GNU Debugger)
+-a always,exit -F path=/usr/bin/gdb -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of dd (used to copy and convert files)
+-a always,exit -F path=/bin/dd -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of strings (used to extract printable strings from binary files)
+-a always,exit -F path=/usr/bin/strings -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of cat (used to read and display the contents of files)
+-a always,exit -F path=/bin/cat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of grep (used to search through files for specific patterns)
+-a always,exit -F path=/bin/grep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of awk (used to parse and manipulate files, potentially including those containing sensitive credentials)
+-a always,exit -F path=/usr/bin/awk -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of cut (used to extract specific fields from files, possibly including those related to credential storage)
+-a always,exit -F path=/usr/bin/cut -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of sed (a powerful text editor that can be used to search and manipulate files, including those that may contain credentials)
+-a always,exit -F path=/usr/bin/sed -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of sort (used to organize data in files, potentially including sorting through log or configuration files that might contain sensitive information)
+-a always,exit -F path=/usr/bin/sort -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of uniq (used to remove duplicate lines from files, possibly as part of refining a list of extracted credentials)
+-a always,exit -F path=/usr/bin/uniq -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of head (used to display the first few lines of a file, potentially for quickly inspecting files that might contain credentials at the top)
+-a always,exit -F path=/usr/bin/head -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of tail (used to display the last few lines of a file, similar to head but for recent entries, relevant in inspecting log entries or file modifications related to credential access)
+-a always,exit -F path=/usr/bin/tail -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of less (a pagination command used to view large texts one screen at a time, potentially for browsing through system logs or configuration files without obvious traces)
+-a always,exit -F path=/usr/bin/less -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of more (similar to less, used for viewing large texts one screen at a time, which could be used by an attacker to browse through sensitive information without direct editing or modification traces)
+-a always,exit -F path=/usr/bin/more -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of unshadow (combines /etc/passwd and /etc/shadow files)
+-a always,exit -F path=/usr/bin/unshadow -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of john (John the Ripper, a password cracking tool)
+-a always,exit -F path=/usr/bin/john -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of hashcat (a powerful password cracking tool)
+-a always,exit -F path=/usr/bin/hashcat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor execution of volatility (a memory forensics tool)
+-a always,exit -F path=/usr/bin/volatility -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor access to sensitive credential files
+-a always,exit -F path=/etc/passwd -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F path=/etc/shadow -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Monitor access to /var/db/shadow/hash/* (contains hashed passwords for user accounts)
+## This rule helps detect potential credential dumping activities by monitoring read access to hashed password files.
+-a always,exit -F path=/var/db/shadow/hash/ -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Monitor access to /private/etc/master.passwd (contains hashed passwords for user accounts)
+## This rule helps detect potential credential dumping activities by monitoring read access to the master password file.
+-a always,exit -F path=/private/etc/master.passwd -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor access to memory and process-related files
+-a always,exit -F path=/proc/mem -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F path=/proc/*/maps -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F path=/proc/*/mem -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Monitor access to authentication and security logs
+-a always,exit -F path=/var/log/auth.log -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F path=/var/log/secure -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+#############################################
+## https://attack.mitre.org/techniques/T1552/
+## Unsecured Credentials
+
+## Adversaries may search compromised systems to find and obtain insecurely stored credentials. These credentials can
+## be stored and/or misplaced in many locations on a system, including plaintext files (e.g. Bash History), operating
+## system or application-specific repositories (e.g. Credentials in Registry), or other specialized files/artifacts
+## (e.g. Private Keys).
+
+#############################################
+## https://attack.mitre.org/techniques/T1552/001/
+## Unsecured Credentials: Credentials In Files
+
+## Adversaries may search local file systems and remote file shares for files containing insecurely stored credentials. These can be files created by users
+## to store their own credentials, shared credential stores for a group of individuals, configuration files containing passwords for a system or service,
+## or source code/binary files containing embedded passwords.
+
+## Monitor execution of various string search tools
+-a always,exit -F path=/usr/bin/grep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F path=/usr/bin/egrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F path=/usr/bin/ugrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of bgrep
+-a always,exit -F path=/usr/bin/bgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of ripgrep
+-a always,exit -F path=/usr/bin/rg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of cgrep
+-a always,exit -F path=/usr/bin/cgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of ngrep
+-a always,exit -F path=/usr/bin/ngrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of vgrep
+-a always,exit -F path=/usr/bin/vgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of the_platinum_searcher
+-a always,exit -F path=/usr/bin/pt -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of ucg
+-a always,exit -F path=/usr/bin/ucg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of the_silver_searcher
+-a always,exit -F path=/usr/bin/ag -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of ack
+-a always,exit -F path=/usr/bin/ack -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F path=/usr/local/bin/ack -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor execution of semgrep
+-a always,exit -F path=/usr/bin/semgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor read access to GPG private keys
+-a always,exit -F dir=/home/ -F dir=.gnupg/ -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor write access to GPG configuration files
+-a always,exit -F dir=/home/ -F dir=.gnupg/ -F perm=w -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Track the execution of GPG-related commands to detect unauthorized use.
+-a always,exit -F path=/usr/bin/gpg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1552/003/
+### Unsecured Credentials: Bash History
+
+## Adversaries may search the bash command history on compromised systems for insecurely stored credentials. Bash keeps track of the
+## commands users type on the command-line with the "history" utility. Once a user logs out, the history is flushed to the user’s
+## .bash_history file. For each user, this file resides at the same location: ~/.bash_history. Typically, this file keeps track of
+## the user’s last 500 commands. Users often type usernames and passwords on the command-line as parameters to programs, which
+## then get saved to this file when they log out. Adversaries can abuse this by looking through the file for potential credentials.
+
+## Accessing Bash history
+## "/home/*/.bash_history"
+## where User NOT IN ("root", "daemon", "bin", "nobody", "_spotlight", "_mbsetupuser")
+## where NOT match(User, "^[a-z]+$") # Filter out common service accounts
+## -F auid!=0: Excludes the root user.
+## -F auid!=1: Excludes the daemon user.
+## -F auid!=2: Excludes the bin user.
+## -F auid!=65534: Excludes the nobody user.
+## -F auid!=79: Excludes the _spotlight user.
+## -F auid!=248: Excludes the _mbsetupuser user.
+## -F auid!=501: Excludes the common service accounts (adjust as needed).
+-a always,exit -F dir=/ -F name=.bash_history -F perm=r -F auid>=1000 -F auid!=4294967295 -F auid!=0 -F auid!=1 -F auid!=2 -F auid!=65534 -F auid!=79 -F auid!=248 -F auid!=501 -k T1552_Bash_History
+
+
+#############################################
+## https://attack.mitre.org/techniques/T1552/004/
+## Unsecured Credentials: Private Keys
+
+## Monitor Access to Common Private Key Files
+-a always,exit -F path=/etc/ssh/ssh_host_rsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F path=/etc/ssh/ssh_host_dsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F path=/etc/ssh/ssh_host_ecdsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F path=/etc/ssh/ssh_host_ed25519_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+
+## Monitor Access to User SSH Keys
+-a always,exit -F dir=/home/ -F name=.ssh -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F dir=/root/.ssh -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+
+## Monitor Access to Common Private Key File Extensions
+-a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.key -k T1552_Private_Keys
+-a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.pem -k T1552_Private_Keys
+-a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.p12 -k T1552_Private_Keys
+-a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.pfx -k T1552_Private_Keys
+
+#############################################
+## https://attack.mitre.org/techniques/T1552/007/
+## Unsecured Credentials: Container API
+
+## Adversaries may gather credentials via APIs within a containers environment. APIs in these environments, such as the
+## Docker API and Kubernetes APIs, allow a user to remotely manage their container resources and cluster components.
+## An adversary may access the Docker API to collect logs that contain credentials to cloud, container, and various
+## other resources in the environment.[3] An adversary with sufficient permissions, such as via a pod's service account,
+## may also use the Kubernetes API to retrieve credentials from the Kubernetes API server. These credentials may include
+## those needed for Docker API authentication or secrets from Kubernetes cluster components.
+
+## Monitor Access to Docker API
+-a always,exit -F path=/var/run/docker.sock -F perm=rw -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+-a always,exit -F path=/etc/docker/daemon.json -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+
+## Monitor Access to Kubernetes API
+-a always,exit -F path=/etc/kubernetes/admin.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+-a always,exit -F path=/etc/kubernetes/kubelet.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+-a always,exit -F path=/etc/kubernetes/controller-manager.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+-a always,exit -F path=/etc/kubernetes/scheduler.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+
+## Monitor Access to Kubernetes Secrets
+-a always,exit -F path=/var/lib/kubelet/pki/* -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+-a always,exit -F path=/var/lib/kubelet/config.yaml -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
