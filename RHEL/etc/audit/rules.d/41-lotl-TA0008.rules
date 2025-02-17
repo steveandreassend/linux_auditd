@@ -9,16 +9,159 @@
 ## and accounts to gain. Adversaries might install their own remote access tools to accomplish Lateral Movement
 ## or use legitimate credentials with native network and operating system tools, which may be stealthier.
 
-## T1021.001 - Remote Services: Remote Desktop Protocol
-##   Ref:
-
-## T1021.005 - Remote Services: VNC
-##   Ref:
-
-## T1071 - Application Layer Protocol
-##   Ref:
-
-## T1021.004 - Remote Services: SSH
-##   Ref:
 
 #############################################
+## T1021.001 - Remote Services: Remote Desktop Protocol
+##   Ref: https://attack.mitre.org/techniques/T1021/001
+
+## Monitor execution of RDP-related commands
+-a always,exit -F arch=b64 -S execve -F comm=xrdp -F auid>=1000 -F auid!=4294967295 -k T1021_RDP_Execution
+-a always,exit -F arch=b64 -S execve -F comm=xrdp-sesman -F auid>=1000 -F auid!=4294967295 -k T1021_RDP_Execution
+-a always,exit -F arch=b64 -S execve -F comm=xfreerdp -F auid>=1000 -F auid!=4294967295 -k T1021_RDP_Client
+-a always,exit -F arch=b64 -S execve -F comm=rdesktop -F auid>=1000 -F auid!=4294967295 -k T1021_RDP_Client
+
+## Monitor modifications to RDP service configuration files
+-w /etc/xrdp/ -p wa -k T1021_RDP_Config_Modification
+-w /etc/xrdp/xrdp.ini -p wa -k T1021_RDP_Config_Modification
+-w /etc/xrdp/sesman.ini -p wa -k T1021_RDP_Config_Modification
+-w /etc/xrdp/startwm.sh -p wa -k T1021_RDP_Config_Modification
+
+## Monitor RDP authentication logs
+-w /var/log/xrdp.log -p wa -k T1021_RDP_Auth
+-w /var/log/xrdp-sesman.log -p wa -k T1021_RDP_Auth
+## -w /var/log/secure -p wa -k T1021_RDP_Auth
+## Coverered by T1070
+##-w /var/log/wtmp -p wa -k T1021_RDP_Session
+##-w /var/log/btmp -p wa -k T1021_RDP_Session
+##-w /var/run/utmp -p wa -k T1021_RDP_Session
+## Covered by 36-session.rule
+
+## Monitor access to common RDP authentication files
+-w /root/.xsession -p wa -k T1021_RDP_Session
+-w /home/*/.xsession -p wa -k T1021_RDP_Session
+
+
+#############################################
+## T1021.004 - Remote Services: SSH
+##   Ref: https://attack.mitre.org/techniques/T1021/004
+
+## Monitor execution of SSH client and server commands and file transfers
+-a always,exit -F arch=b64 -S execve -F comm=ssh -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Client
+-a always,exit -F arch=b64 -S execve -F comm=scp -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_File_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=sftp -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_File_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=rsync -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_File_Transfer
+-a always,exit -F arch=b64 -S execve -F comm=sshd -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Server
+
+## Monitor modifications to SSH configuration files
+-w /etc/ssh/sshd_config -p wa -k T1021_SSH_Config_Modification
+-w /etc/ssh/ssh_config -p wa -k T1021_SSH_Config_Modification
+-w /root/.ssh/ -p wa -k T1021_SSH_Key_Modification
+-w /home/*/.ssh/ -p wa -k T1021_SSH_Key_Modification
+
+## Monitor authentication logs related to SSH
+##-w /var/log/auth.log -p wa -k T1021_SSH_Auth
+## Covered by TA0005
+##-w /var/log/secure -p wa -k T1021_SSH_Auth
+## Coverered by T1070
+##-w /var/log/wtmp -p wa -k T1021_SSH_Session
+##-w /var/log/btmp -p wa -k T1021_SSH_Failed_Login
+## -w /var/run/utmp -p wa -k T1021_SSH_Session
+## Covered by 36-session.rule
+
+## Monitor SSH key additions and modifications
+## -w /root/.ssh/authorized_keys -p wa -k T1021_SSH_Key_Modification
+## -w /home/*/.ssh/authorized_keys -p wa -k T1021_SSH_Key_Modification
+## -w /root/.ssh/known_hosts -p wa -k T1021_SSH_Known_Hosts
+## -w /home/*/.ssh/known_hosts -p wa -k T1021_SSH_Known_Hosts
+## Covered by TA0003
+
+## Monitor execution of SSH service control commands
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=restart -F arg1=sshd -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=stop -F arg1=sshd -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=disable -F arg1=sshd -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Service_Control
+
+## Monitor SSH agent activity
+-a always,exit -F arch=b64 -S execve -F comm=ssh-agent -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Agent
+-a always,exit -F arch=b64 -S execve -F comm=ssh-add -F auid>=1000 -F auid!=4294967295 -k T1021_SSH_Agent
+
+
+#############################################
+## T1021.005 - Remote Services: VNC
+##   Ref: https://attack.mitre.org/techniques/T1021/005
+
+## Monitor execution of VPN-related commands
+-a always,exit -F arch=b64 -S execve -F comm=openvpn -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Execution
+-a always,exit -F arch=b64 -S execve -F comm=strongswan -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Execution
+-a always,exit -F arch=b64 -S execve -F comm=ipsec -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Execution
+-a always,exit -F arch=b64 -S execve -F comm=vpnc -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Execution
+-a always,exit -F arch=b64 -S execve -F comm=nmcli -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_NetworkManager
+-a always,exit -F arch=b64 -S execve -F comm=openconnect -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Execution
+
+## Monitor modifications to VPN configuration files
+-w /etc/openvpn/ -p wa -k T1021_VPN_Config_Modification
+-w /etc/openvpn/server.conf -p wa -k T1021_VPN_Config_Modification
+-w /etc/openvpn/client.conf -p wa -k T1021_VPN_Config_Modification
+-w /etc/ipsec.conf -p wa -k T1021_VPN_Config_Modification
+-w /etc/ipsec.secrets -p wa -k T1021_VPN_Config_Modification
+-w /etc/strongswan.conf -p wa -k T1021_VPN_Config_Modification
+-w /etc/vpnc/ -p wa -k T1021_VPN_Config_Modification
+-w /etc/vpnc/default.conf -p wa -k T1021_VPN_Config_Modification
+-w /etc/NetworkManager/system-connections/ -p wa -k T1021_VPN_NetworkManager
+
+## Monitor VPN authentication logs
+-w /var/log/openvpn.log -p wa -k T1021_VPN_Auth
+
+## Monitor VPN service control (starting/stopping VPN services)
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=restart -F arg1=openvpn -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=stop -F arg1=openvpn -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=disable -F arg1=openvpn -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=restart -F arg1=strongswan -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=restart -F arg1=ipsec -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+-a always,exit -F arch=b64 -S execve -F comm=systemctl -F arg0=restart -F arg1=vpnc -F auid>=1000 -F auid!=4294967295 -k T1021_VPN_Service_Control
+
+## Monitor access to VPN-related certificates and credentials
+-w /etc/openvpn/easy-rsa/pki/ -p r -k T1021_VPN_Credential_Access
+-w /etc/ipsec.d/certs/ -p r -k T1021_VPN_Credential_Access
+-w /etc/ipsec.d/private/ -p r -k T1021_VPN_Credential_Access
+-w /etc/strongswan/ipsec.secrets -p r -k T1021_VPN_Credential_Access
+
+
+#############################################
+## T1071 - Application Layer Protocol
+##   Ref: https://attack.mitre.org/techniques/T1071/
+
+## Monitor execution of common network utilities
+##-a always,exit -F arch=b64 -S execve -F comm=wget -F auid>=1000 -F auid!=4294967295 -k T1071_HTTP_Request
+##-a always,exit -F arch=b64 -S execve -F comm=curl -F auid>=1000 -F auid!=4294967295 -k T1071_HTTP_Request
+-a always,exit -F arch=b64 -S execve -F comm=lynx -F auid>=1000 -F auid!=4294967295 -k T1071_HTTP_Request
+##-a always,exit -F arch=b64 -S execve -F comm=ftp -F auid>=1000 -F auid!=4294967295 -k T1071_FTP_Request
+-a always,exit -F arch=b64 -S execve -F comm=tftp -F auid>=1000 -F auid!=4294967295 -k T1071_TFTP_Request
+##-a always,exit -F arch=b64 -S execve -F comm=nc -F auid>=1000 -F auid!=4294967295 -k T1071_Generic_Protocol
+##-a always,exit -F arch=b64 -S execve -F comm=ncat -F auid>=1000 -F auid!=4294967295 -k T1071_Generic_Protocol
+-a always,exit -F arch=b64 -S execve -F comm=socat -F auid>=1000 -F auid!=4294967295 -k T1071_Generic_Protocol
+
+## Monitor execution of commands that modify DNS resolution (T1071.004 - DNS)
+## -a always,exit -F arch=b64 -S execve -F comm=nslookup -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Request
+## -a always,exit -F arch=b64 -S execve -F comm=dig -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Request
+## -a always,exit -F arch=b64 -S execve -F comm=host -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Request
+## Covered by TA0007
+-a always,exit -F arch=b64 -S execve -F comm=ping -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Request
+
+## Monitor modifications to system networking configurations
+## -w /etc/hosts -p wa -k T1071_Hosts_File_Modification
+## -w /etc/resolv.conf -p wa -k T1071_DNS_Configuration
+## Covered by TA0005
+-w /etc/nsswitch.conf -p wa -k T1071_DNS_Configuration
+
+## Monitor execution of tunneling software
+## -a always,exit -F arch=b64 -S execve -F comm=ssh -F auid>=1000 -F auid!=4294967295 -k T1071_SSH_Tunneling
+-a always,exit -F arch=b64 -S execve -F comm=stunnel -F auid>=1000 -F auid!=4294967295 -k T1071_TLS_Tunnel
+-a always,exit -F arch=b64 -S execve -F comm=proxychains -F auid>=1000 -F auid!=4294967295 -k T1071_Proxy_Usage
+
+## Monitor access to logs related to network communications
+-w /var/log/httpd/ -p wa -k T1071_HTTP_Server_Log
+-w /var/log/nginx/ -p wa -k T1071_HTTP_Server_Log
+-w /var/log/maillog -p wa -k T1071_Email_Logging
+-w /var/log/mail.log -p wa -k T1071_Email_Logging
+-w /var/log/squid/ -p wa -k T1071_Proxy_Log
+-w /var/log/named/ -p wa -k T1071_DNS_Log

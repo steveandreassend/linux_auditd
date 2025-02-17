@@ -252,12 +252,14 @@ DONE ##   Ref: https://attack.mitre.org/techniques/T1562/004/
 ##-a always,exit -F arch=b64 -S execve -F comm=wget -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
 ## Covered by Exfiltration
 -a always,exit -F arch=b64 -S execve -F comm=http -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=lynx -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F comm=lynx -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
+## Covered by TA0008
 -a always,exit -F arch=b64 -S execve -F comm=elinks -F auid>=1000 -F auid!=4294967295 -k T1071_Web_Protocols
 
 ## T1071.004 - Domain Name System (DNS Tunneling, nslookup, dig, host)
--a always,exit -F arch=b64 -S execve -F comm=nslookup -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
--a always,exit -F arch=b64 -S execve -F comm=dig -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+## -a always,exit -F arch=b64 -S execve -F comm=nslookup -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+## -a always,exit -F arch=b64 -S execve -F comm=dig -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
+## Covered by TA0007
 -a always,exit -F arch=b64 -S execve -F comm=host -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
 -a always,exit -F arch=b64 -S execve -F comm=dnscat2 -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
 -a always,exit -F arch=b64 -S execve -F comm=dnschef -F auid>=1000 -F auid!=4294967295 -k T1071_DNS_Protocol
@@ -269,4 +271,5 @@ DONE ##   Ref: https://attack.mitre.org/techniques/T1562/004/
 -a always,exit -F arch=b64 -S execve -F comm=slack -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
 -a always,exit -F arch=b64 -S execve -F comm=discord -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
 -a always,exit -F arch=b64 -S execve -F comm=nc -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
--a always,exit -F arch=b64 -S execve -F comm=socat -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+##-a always,exit -F arch=b64 -S execve -F comm=socat -F auid>=1000 -F auid!=4294967295 -k T1071_Other_Protocols
+## Covered by TA0008
