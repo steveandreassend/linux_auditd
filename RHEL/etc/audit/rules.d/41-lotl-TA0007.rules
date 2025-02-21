@@ -28,35 +28,36 @@
 ## behaviors, including determining certain access within the target network and what actions to do next.
 
 ## Monitor execution of common network discovery commands
--a always,exit -F arch=b64 -S execve -F comm=ifconfig -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=ip -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=route -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=netstat -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=ss -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=hostname -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=arp -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=nmcli -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
--a always,exit -F arch=b64 -S execve -F comm=resolvectl -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/sbin/ifconfig  -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ip        -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/sbin/route     -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/netstat   -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ss        -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/hostname  -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/arp     -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/nmcli    -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/resolvectl -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Discovery
 
 ## Monitor execution of DNS resolution commands
--a always,exit -F arch=b64 -S execve -F comm=nslookup -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
--a always,exit -F arch=b64 -S execve -F comm=dig -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
--a always,exit -F arch=b64 -S execve -F comm=host -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/nslookup -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/dig      -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/host     -F auid>=1000 -F auid!=4294967295 -k T1016_DNS_Resolution
 
 ## Monitor modifications to network configuration files
--w /etc/network/ -p wa -k T1016_Network_Config_Modification
--w /etc/sysconfig/network -p wa -k T1016_Network_Config_Modification
--w /etc/sysconfig/network-scripts/ -p wa -k T1016_Network_Config_Modification
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/etc/NetworkManager/            -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Config_Modification
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/sysconfig/network         -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Config_Modification
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/etc/sysconfig/network-scripts/ -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Config_Modification
 ## -w /etc/resolv.conf -p wa -k T1016_DNS_Config_Modification
-## -w /etc/hosts -p wa -k T1016_DNS_Config_Modification
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/resolv.conf             -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Config_Modification
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/hosts                   -F auid>=1000 -F auid!=4294967295 -k T1016_Network_Config_Modification
 ## Covered by TA0005
--w /etc/hostname -p wa -k T1016_Hostname_Modification
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/hostname                  -F auid>=1000 -F auid!=4294967295 -k T1016_Hostname_Modification
 
 ## Monitor execution of firewall-related commands
--a always,exit -F arch=b64 -S execve -F comm=iptables -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
--a always,exit -F arch=b64 -S execve -F comm=nft -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
--a always,exit -F arch=b64 -S execve -F comm=firewall-cmd -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
--a always,exit -F arch=b64 -S execve -F comm=ufw -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/sbin/iptables        -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/nft         -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/firewall-cmd -F auid>=1000 -F auid!=4294967295 -k T1016_FireFirewall_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/ufw         -F auid>=1000 -F auid!=4294967295 -k T1016_Firewall_Discovery
 
 
 #############################################
@@ -75,39 +76,43 @@
 
 ## Some files and directories may require elevated or specific user permissions to access.
 
+## Detect when an admin may be abusing power by looking in user's home dir.
+-a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k T1083_File_Discovery
+## Adapt if home dirs are not in /home
+
 ## Monitor execution of common file and directory discovery commands
--a always,exit -F arch=b64 -S execve -F comm=find -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
--a always,exit -F arch=b64 -S execve -F comm=ls -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
--a always,exit -F arch=b64 -S execve -F comm=tree -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
--a always,exit -F arch=b64 -S execve -F comm=locate -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
--a always,exit -F arch=b64 -S execve -F comm=du -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
--a always,exit -F arch=b64 -S execve -F comm=stat -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
-## If this generates too many logs from whitelisted scripts, consider suppressing the user IDs in the audit rule
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/find   -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ls     -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/tree   -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/locate -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/du     -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/stat   -F auid>=1000 -F auid!=4294967295 -k T1083_File_Discovery
+## If any rule generates too many logs from whitelisted scripts, consider suppressing the user IDs in the audit rule
 
 ## Monitor access to sensitive directories
-##-w /root/ -p r -k T1083_Sensitive_Directory_Access
-##-w /home/ -p r -k T1083_Sensitive_Directory_Access
-##-w /etc/ -p r -k T1083_System_Config_Access
-##-w /var/log/ -p r -k T1083_Log_File_Access
-##-w /tmp/ -p r -k T1083_Temp_File_Access
+-a always,exit -F arch=b64 -S open,access,read -F dir=/root/    -F auid>=1000 -F auid!=4294967295 -k T1083_Sensitive_Directory_Access
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/home/    -F auid>=1000 -F auid!=4294967295 -k T1083_Sensitive_Directory_Access
+-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/     -F auid>=1000 -F auid!=4294967295 -k T1083_System_Config_Access
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/var/log/ -F auid>=1000 -F auid!=4294967295 -k T1083_Log_File_Access
+-a always,exit -F arch=b64 -S open,access,read -F dir=/tmp/     -F auid>=1000 -F auid!=4294967295 -k T1083_Temp_File_Access
 ## This will generate too many logs
 
 ## Monitor execution of file search and indexing commands
--a always,exit -F arch=b64 -S execve -F comm=updatedb -F auid>=1000 -F auid!=4294967295 -k T1083_File_Indexing
--a always,exit -F arch=b64 -S execve -F comm=grep -F auid>=1000 -F auid!=4294967295 -k T1083_File_Search
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/updatedb -F auid>=1000 -F auid!=4294967295 -k T1083_File_Indexing
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/grep     -F auid>=1000 -F auid!=4294967295 -k T1083_File_Search
+## Covered by T1552_Credentials_In_Files
 
-## Monitor modifications to system directories
-## -w /etc/passwd -p wa -k T1083_System_File_Modification
-## -w /etc/shadow -p wa -k T1083_System_File_Modification
-## -w /etc/group -p wa -k T1083_System_File_Modification
-## -w /etc/sudoers -p wa -k T1083_System_File_Modification
+## Monitor write/attribute access to system authentication files
+##-a always,exit -F arch=b64 -S open,write,truncate,append,chmod,fchmod,fchown,chown -F path=/etc/passwd  -F auid>=1000 -F auid!=4294967295 -k T1083_System_File_Modification
+##-a always,exit -F arch=b64 -S open,write,truncate,append,chmod,fchmod,fchown,chown -F path=/etc/shadow  -F auid>=1000 -F auid!=4294967295 -k T1083_System_File_Modification
+##-a always,exit -F arch=b64 -S open,write,truncate,append,chmod,fchmod,fchown,chown -F path=/etc/group   -F auid>=1000 -F auid!=4294967295 -k T1083_System_File_Modification
+##-a always,exit -F arch=b64 -S open,write,truncate,append,chmod,fchmod,fchown,chown -F path=/etc/sudoers -F auid>=1000 -F auid!=4294967295 -k T1083_System_File_Modification
 ## Covered by TA0006
 
 ## Monitor execution of file metadata inspection commands
--a always,exit -F arch=b64 -S execve -F comm=file -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
--a always,exit -F arch=b64 -S execve -F comm=lsattr -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
--a always,exit -F arch=b64 -S execve -F comm=stat -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
-
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/file   -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsattr -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/stat   -F auid>=1000 -F auid!=4294967295 -k T1083_File_Metadata_Inspection
 
 #############################################
 ## T1518 - Software Discovery
@@ -124,32 +129,32 @@
 ## are present or if the compromised system has a version of software that is vulnerable to Exploitation for Privilege Escalation.
 
 ## Monitor execution of common software discovery commands
--a always,exit -F arch=b64 -S execve -F comm=dpkg -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=rpm -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=yum -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=dnf -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=apt -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=apt-get -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=zypper -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
--a always,exit -F arch=b64 -S execve -F comm=pacman -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/dpkg    -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rpm     -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/yum     -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/dnf     -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/apt     -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/apt-get -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/zypper  -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/pacman  -F auid>=1000 -F auid!=4294967295 -k T1518_Software_Discovery
 
 ## Monitor execution of system inspection commands
--a always,exit -F arch=b64 -S execve -F comm=uname -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
--a always,exit -F arch=b64 -S execve -F comm=lsb_release -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
--a always,exit -F arch=b64 -S execve -F comm=cat -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/uname      -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsb_release -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/cat        -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+## This is likely to generate too much noise
 
 ## Monitor access to files containing software information
--w /var/lib/rpm/ -p r -k T1518_Package_Inspection
--w /var/lib/dpkg/ -p r -k T1518_Package_Inspection
--w /etc/lsb-release -p r -k T1518_System_Inspection
--w /etc/redhat-release -p r -k T1518_System_Inspection
--w /etc/os-release -p r -k T1518_System_Inspection
+-a always,exit -F arch=b64 -S open,access,read -F dir=/var/lib/rpm/         -F auid>=1000 -F auid!=4294967295 -k T1518_Package_Inspection
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/lsb-release     -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/redhat-release  -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/os-release      -F auid>=1000 -F auid!=4294967295 -k T1518_System_Inspection
 
 ## Monitor execution of user enumeration commands (may be part of software reconnaissance)
--a always,exit -F arch=b64 -S execve -F comm=id -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
--a always,exit -F arch=b64 -S execve -F comm=whoami -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
--a always,exit -F arch=b64 -S execve -F comm=w -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
--a always,exit -F arch=b64 -S execve -F comm=who -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/id     -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/whoami -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/w      -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/who    -F auid>=1000 -F auid!=4294967295 -k T1518_User_Discovery
 
 
 #############################################
@@ -164,29 +169,28 @@
 ## follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions.
 
 ## - Monitor execution of service discovery commands
-##-a always,exit -F arch=b64 -S execve -F comm=systemctl -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=service -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=chkconfig -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/systemctl -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/service   -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/sbin/chkconfig   -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
 ## Covered by TA0003
--a always,exit -F arch=b64 -S execve -F comm=rc-status -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rc-status -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Discovery
 
-## Monitor access to service configuration files
-## -w /etc/systemd/system/ -p r -k T1007_Service_Config_Access
-## -w /usr/lib/systemd/system/ -p r -k T1007_Service_Config_Access
-## -w /etc/init.d/ -p r -k T1007_Service_Config_Access
-## -w /etc/rc.d/ -p r -k T1007_Service_Config_Access
+## Monitor read access to service configuration directories
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/systemd/system/    -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Config_Access
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/usr/lib/systemd/system/ -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Config_Access
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/init.d/            -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Config_Access
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/rc.d/              -F auid>=1000 -F auid!=4294967295 -k T1007_Service_Config_Access
 ## Covered by TA0003
--w /etc/xinetd.d/ -p r -k T1007_Service_Config_Access
 
 ## Monitor execution of network service discovery commands
--a always,exit -F arch=b64 -S execve -F comm=netstat -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
--a always,exit -F arch=b64 -S execve -F comm=ss -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
--a always,exit -F arch=b64 -S execve -F comm=lsof -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/netstat -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ss      -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsof    -F auid>=1000 -F auid!=4294967295 -k T1007_Network_Service_Discovery
 
 ## Monitor execution of commands listing active services
--a always,exit -F arch=b64 -S execve -F comm=ps -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
--a always,exit -F arch=b64 -S execve -F comm=top -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
--a always,exit -F arch=b64 -S execve -F comm=htop -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ps      -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/top     -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/htop    -F auid>=1000 -F auid!=4294967295 -k T1007_Process_Discovery
 
 
 #############################################
@@ -206,32 +210,24 @@
 ## On network devices, Network Device CLI commands such as show processes can be used to display current running processes
 
 ## Monitor execution of process discovery commands
-##-a always,exit -F arch=b64 -S execve -F comm=ps -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=top -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=htop -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ps    -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/top   -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/htop  -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
 ## Covered by T1007
--a always,exit -F arch=b64 -S execve -F comm=pgrep -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
--a always,exit -F arch=b64 -S execve -F comm=pidof -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/pgrep -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/pidof -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Discovery
 
 ## Monitor execution of system introspection commands
-##-a always,exit -F arch=b64 -S execve -F comm=lsof -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsof   -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
 ## Covered by T1007
--a always,exit -F arch=b64 -S execve -F comm=strace -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
-##-a always,exit -F arch=b64 -S execve -F comm=gdb -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
-## Covered by TA0006
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/strace -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/gdb    -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Introspection
+## Covered by TA0006, also where ptrace is covered
 
 ## Monitor execution of process inspection commands
--a always,exit -F arch=b64 -S execve -F comm=procinfo -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
--a always,exit -F arch=b64 -S execve -F comm=pstree -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
--a always,exit -F arch=b64 -S execve -F comm=watch -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
-
-## Monitor access to process-related files and directories
--w /proc/ -p r -k T1057_Process_Proc_Access
--w /proc/*/status -p r -k T1057_Process_Proc_Access
--w /proc/*/cmdline -p r -k T1057_Process_Proc_Access
--w /proc/*/exe -p r -k T1057_Process_Proc_Access
-## -w /proc/*/maps -p r -k T1057_Process_Proc_Access
-## Covered by TA0006
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/procinfo -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/pstree   -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/watch    -F auid>=1000 -F auid!=4294967295 -k T1057_Process_Inspection
 
 
 #############################################
@@ -255,27 +251,28 @@
 ## currently logged into the device.
 
 ## Monitor execution of user discovery commands
-##-a always,exit -F arch=b64 -S execve -F comm=id -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=whoami -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=who -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=w -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/id     -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/whoami -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/who    -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/w      -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
 ## Covered by T1518
--a always,exit -F arch=b64 -S execve -F comm=finger -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
--a always,exit -F arch=b64 -S execve -F comm=users -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
--a always,exit -F arch=b64 -S execve -F comm=logname -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/finger  -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/users   -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/logname -F auid>=1000 -F auid!=4294967295 -k T1033_User_Discovery
 
 ## Monitor execution of user privilege discovery commands
--a always,exit -F arch=b64 -S execve -F comm=groups -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=whoami -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
-##-a always,exit -F arch=b64 -S execve -F comm=sudo -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/groups  -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/whoami  -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/sudo    -F auid>=1000 -F auid!=4294967295 -k T1033_User_Privilege_Discovery
 
-## Monitor access to user-related system files
-##-w /etc/passwd -p r -k T1033_User_File_Access
-##-w /etc/shadow -p r -k T1033_User_File_Access
-##-w /etc/group -p r -k T1033_User_File_Access
-##-w /var/run/utmp -p r -k T1033_Logged_In_Users
-##-w /var/log/wtmp -p r -k T1033_User_Login_History
-##-w /var/log/lastlog -p r -k T1033_User_Login_History
+## Monitor read access to user-related files
+##-a always,exit -F arch=b64 -S open,access,read -F path=/etc/passwd     -F auid>=1000 -F auid!=4294967295 -k T1033_User_File_Access
+##-a always,exit -F arch=b64 -S open,access,read -F path=/etc/shadow     -F auid>=1000 -F auid!=4294967295 -k T1033_User_File_Access
+##-a always,exit -F arch=b64 -S open,access,read -F path=/etc/group      -F auid>=1000 -F auid!=4294967295 -k T1033_User_File_Access
+## Monitor read access to login-related files
+##-a always,exit -F arch=b64 -S open,access,read -F path=/var/run/utmp    -F auid>=1000 -F auid!=4294967295 -k T1033_Logged_In_Users
+##-a always,exit -F arch=b64 -S open,access,read -F path=/var/log/wtmp    -F auid>=1000 -F auid!=4294967295 -k T1033_User_Login_History
+##-a always,exit -F arch=b64 -S open,access,read -F path=/var/log/lastlog -F auid>=1000 -F auid!=4294967295 -k T1033_User_Login_History
 ## Covered by TA0005
 
 
@@ -299,35 +296,37 @@
 ## virtual machine information via APIs. Successful authenticated API calls can return data such as the operating
 ## system platform and status of a particular instance or the model view of a virtual machine.
 
-## Monitor execution of system information discovery commands
--a always,exit -F arch=b64 -S execve -F comm=uname -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+## Monitor execution of system discovery commands
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/uname      -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
 ## Covered by T1518
-## -a always,exit -F arch=b64 -S execve -F comm=hostname -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+## -a always,exit -F arch=b64 -S execve -F path=/usr/bin/hostname   -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
 ## Covered by T1016
--a always,exit -F arch=b64 -S execve -F comm=uptime -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
--a always,exit -F arch=b64 -S execve -F comm=lsb_release -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
--a always,exit -F arch=b64 -S execve -F comm=cat -F path=/etc/os-release -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
--a always,exit -F arch=b64 -S execve -F comm=cat -F path=/etc/issue -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
--a always,exit -F arch=b64 -S execve -F comm=cat -F path=/proc/version -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/uptime     -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsb_release -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+
+## Monitor read access to system information files
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/os-release   -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/issue       -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
+-a always,exit -F arch=b64 -S open,access,read -F path=/proc/version   -F auid>=1000 -F auid!=4294967295 -k T1082_System_Discovery
 
 ## Monitor execution of hardware information commands
--a always,exit -F arch=b64 -S execve -F comm=lscpu -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
--a always,exit -F arch=b64 -S execve -F comm=dmidecode -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
--a always,exit -F arch=b64 -S execve -F comm=lshw -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
--a always,exit -F arch=b64 -S execve -F comm=lsblk -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lscpu     -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/dmidecode -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lshw      -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lsblk     -F auid>=1000 -F auid!=4294967295 -k T1082_Hardware_Discovery
 
 ## Monitor execution of system performance commands
-##-a always,exit -F arch=b64 -S execve -F comm=top -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
--a always,exit -F arch=b64 -S execve -F comm=vmstat -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
--a always,exit -F arch=b64 -S execve -F comm=iostat -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
--a always,exit -F arch=b64 -S execve -F comm=free -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/top       -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/vmstat    -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/iostat    -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/free      -F auid>=1000 -F auid!=4294967295 -k T1082_Performance_Discovery
 
 ## Monitor access to system configuration files
--w /etc/os-release -p r -k T1082_System_Config_Access
--w /etc/issue -p r -k T1082_System_Config_Access
--w /etc/hostname -p r -k T1082_System_Config_Access
--w /etc/machine-id -p r -k T1082_System_Config_Access
--w /proc/version -p r -k T1082_System_Config_Access
--w /etc/lsb-release -p r -k T1082_System_Config_Access
--w /etc/redhat-release -p r -k T1082_System_Config_Access
--w /etc/oracle-release -p r -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/os-release     -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/issue         -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/hostname      -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/machine-id    -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/proc/version     -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/lsb-release    -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/redhat-release -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/oracle-release -F auid>=1000 -F auid!=4294967295 -k T1082_System_Config_Access

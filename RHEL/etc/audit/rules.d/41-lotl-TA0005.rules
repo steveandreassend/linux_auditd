@@ -49,27 +49,33 @@
 ## /var/log/httpd/: Web server access and error logs
 
 ## Monitor Access to General and System-Related Messages
--a always,exit -F path=/var/log/messages -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/messages -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Authentication Logs
--a always,exit -F path=/var/log/secure -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
--a always,exit -F path=/var/log/auth.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/secure -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Login Records
--a always,exit -F path=/var/log/utmp -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
--a always,exit -F path=/var/log/wtmp -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/utmp -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+## Deprecated
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/wtmp -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Kernel Logs
--a always,exit -F path=/var/log/kern.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/kern.log -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Crond Logs
--a always,exit -F path=/var/log/cron.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/cron.log -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Mail Server Logs
--a always,exit -F path=/var/log/maillog -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/maillog -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
 
 ## Monitor Access to Web Server Logs
--a always,exit -F dir=/var/log/httpd/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/var/log/httpd/ -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+## Be wary of this rule causing a log storm
+
+## Monitor write/attribute access to VPN authentication logs
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/openvpn.log -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Logs
+## Uncomment if Open VPN is installed
+
 
 #############################################
 ## https://attack.mitre.org/techniques/T1070/003/
@@ -85,8 +91,10 @@
 ## back to commands they've used before in different sessions.
 
 ## Adversaries may delete their commands from these logs by manually clearing the history (history -c) or deleting the bash history file rm ~/.bash_history.
--a always,exit -F dir=/ -F name=.bash_history -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Command_History
-
+## auditd doesn't support wildcards in the path field like /home/*/.bash_history. This is because auditd needs to resolve the paths at the time the rule is loaded, and wildcards would require constant re-evaluation, which isn't how it's designed to work.
+## One possibility is to periodically iterate through all /home directories and generate the auditd rules, but it is not very practical
+## At the minimum, it is recommended to add rules for known specific application accounts:
+##-a always,exit -F path=/home/user1/.bash_history -S write,truncate,chmod,fchmod,unlink,rename -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Command_History
 
 #############################################
 ## https://attack.mitre.org/techniques/T1070/004/
@@ -101,10 +109,11 @@
 ## Examples of built-in Command and Scripting Interpreter functions include del on Windows and rm or unlink on Linux and macOS.
 
 ## Monitor execution of the rm command
--a always,exit -F path=/bin/rm -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
+-a always,exit -F arch=b64 -S execve -F path=/bin/rm -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
+## Be wary of a log storm if there is a regular bulk file deletion operation, and adapt the user filter accordingly
 
 ## Monitor execution of the unlink command
--a always,exit -F path=/bin/unlink -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
+-a always,exit -F arch=b64 -S execve -F path=/bin/unlink -F auid>=1000 -F auid!=4294967295 -k T1070_File_Deletion
 
 
 #############################################
@@ -128,16 +137,16 @@
 ## Timestomping may be used along with file name Masquerading to hide malware and tools.
 
 ## Monitor changes to file timestamps using touch command
--a always,exit -F path=/usr/bin/touch -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/touch -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
 
 ## Monitor changes to file timestamps using debugfs
--a always,exit -F path=/sbin/debugfs -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+-a always,exit -F arch=b64 -S execve -F path=/sbin/debugfs -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
 
 ## Monitor changes to file timestamps using setfattr
--a always,exit -F path=/usr/bin/setfattr -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/setfattr -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
 
 ## Monitor changes to file timestamps using stat
--a always,exit -F path=/usr/bin/stat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/stat -F auid>=1000 -F auid!=4294967295 -k T1070_Timestomp
 
 
 #############################################
@@ -152,24 +161,23 @@
 
 ## Monitor Execution of Commands that Clear Network Connection History
 ## Monitor execution of the `history` command
--a always,exit -F path=/usr/bin/history -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/history -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
 
 ## Monitor execution of the `last` command
--a always,exit -F path=/usr/bin/last -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/last -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
 
 ## Monitor execution of the `lastlog` command
--a always,exit -F path=/usr/bin/lastlog -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lastlog -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
 
 ## Monitor Access to Network Configuration Files
--a always,exit -F path=/etc/hosts -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
--a always,exit -F path=/etc/resolv.conf -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
--a always,exit -F path=/etc/hostname -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/hosts -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/resolv.conf -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/hostname -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
 
 ## Monitor Access to System Logs Related to Network Connections
--a always,exit -F path=/var/log/syslog -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
--a always,exit -F path=/var/log/messages -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
--a always,exit -F path=/var/log/auth.log -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
-
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/messages -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/var/log/secure -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Network_History
+## Covered by T1070_Clear_Logs
 
 #############################################
 ## https://attack.mitre.org/techniques/T1070/008/
@@ -191,20 +199,20 @@
 
 ## Monitor Execution of Mailbox Management Commands
 ## Monitor execution of the mail command
--a always,exit -F path=/usr/bin/mail -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/mail -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
 
 ## Monitor execution of the mutt command
--a always,exit -F path=/usr/bin/mutt -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/mutt -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
 
 ## Monitor execution of the mailx command
--a always,exit -F path=/usr/bin/mailx -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/mailx -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
 
 ## Monitor Access to Mailbox Files
 ## Monitor access to mailbox files in /var/mail
--a always,exit -F dir=/var/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+-a always,exit -F arch=b64 -F dir=/var/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
 
 ## Monitor access to mailbox files in /var/spool/mail
--a always,exit -F dir=/var/spool/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
+-a always,exit -F arch=b64 -F dir=/var/spool/mail/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Mailbox_Data
 
 
 #############################################
@@ -213,24 +221,29 @@
 
 ##Monitor Execution of Commands that Modify Persistence Mechanisms
 ## Monitor execution of the systemctl command (used to manage systemd services)
--a always,exit -F path=/bin/systemctl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+##-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/systemctl -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+## Covered by T1574_Service_Control
 
 ## Monitor execution of the crontab command (used to manage cron jobs)
--a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+##-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/crontab -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+## Covered by T1543_Cron_Control
 
 ## Monitor execution of the at command (used to schedule tasks)
--a always,exit -F path=/usr/bin/at -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+##-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/at -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+## Covered by T1543_At_Control
 
 ## Monitor Access to Common Persistence Files and Directories
 ## Monitor access to systemd service files
--a always,exit -F dir=/etc/systemd/system/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/etc/systemd/system/ -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+## Covered by T1543_SysV_Service_Modification
 
 ## Monitor access to cron job files
--a always,exit -F dir=/etc/cron.d/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
--a always,exit -F path=/etc/crontab -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F path=/etc/crontab -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/etc/cron.d/ -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+## Covered by T1546_Cron_Modification
 
 ## Monitor access to at job files
--a always,exit -F dir=/var/spool/cron/atjobs/ -F perm=wa -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
+-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/var/spool/at/spool/ -F auid>=1000 -F auid!=4294967295 -k T1070_Clear_Persistence
 
 
 #############################################
@@ -249,10 +262,12 @@
 ## (such as User Execution and Phishing) that may have generated alerts or otherwise drawn attention from defenders.
 
 ## Monitor execution of the mv command (used to move files)
--a always,exit -F path=/bin/mv -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+##-a always,exit -F arch=b64 -S execve -F exe=/bin/mv -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+## Be wary of a log storm and adapt as necessary
 
 ## Monitor execution of the cp command (used to copy files)
--a always,exit -F path=/bin/cp -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+##-a always,exit -F arch=b64 -S execve -F exe=/bin/cp -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+## Be wary of a log storm and adapt as necessary
 
 ## Monitor execution of the rsync command (used to synchronize files)
--a always,exit -F path=/usr/bin/rsync -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/rsync -F auid>=1000 -F auid!=4294967295 -k T1070_Relocate_Malware

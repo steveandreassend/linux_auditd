@@ -15,42 +15,52 @@
 ## command and control channel.
 
 ## Monitor execution of cloud storage file transfer utilities
--a always,exit -F arch=b64 -S execve -F comm=aws -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
--a always,exit -F arch=b64 -S execve -F comm=gsutil -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
--a always,exit -F arch=b64 -S execve -F comm=azcopy -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
--a always,exit -F arch=b64 -S execve -F comm=rclone -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/aws      -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/gsutil   -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/azcopy   -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rclone   -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/oci      -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ibmcloud -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Cloud_Storage
 
-## Monitor execution of web-based exfiltration tools (Wget, Curl, SCP, Rsync, FTP)
--a always,exit -F arch=b64 -S execve -F comm=wget -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=curl -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=scp -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=sftp -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=rsync -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=ftp -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=rclone -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
--a always,exit -F arch=b64 -S execve -F comm=lftp -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+## Monitor execution of web-based exfiltration tools (Wget, Curl, SCP, Rsync, FTP, LFTP)
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/wget    -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/curl    -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/scp     -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/sftp    -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ftp     -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+## Covered by TA0008
+##-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rsync   -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+## Covered by TA0005
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rclone  -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/lftp    -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
 
 ## Monitor execution of social media clients and command-line tools for potential data exfiltration
--a always,exit -F arch=b64 -S execve -F comm=twurl -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
--a always,exit -F arch=b64 -S execve -F comm=instaloader -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
--a always,exit -F arch=b64 -S execve -F comm=tiktok-scraper -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/twurl         -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/instaloader -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/tiktok-scraper -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Social_Media
+## These are easily evaded by using a differnet path - malware scanners are the best detection method
 
 ## Monitor changes to web upload directories (indicating potential exfiltration attempts)
--w /var/www/html/uploads/ -p wa -k T1567_Exfiltration_Web_Protocols
--w /usr/share/nginx/html/uploads/ -p wa -k T1567_Exfiltration_Web_Protocols
+##-w /var/www/html/uploads/ -p wa -k T1567_Exfiltration_Web_Protocols
+## Uncomment if Apache HTTP Server is installed
+##-w /usr/share/nginx/html/uploads/ -p wa -k T1567_Exfiltration_Web_Protocols
+## Uncomment if Nginx is installed
 
-## Monitor execution of scripting languages commonly used for exfiltration
-##-a always,exit -F arch=b64 -S execve -F comm=python3 -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Scripting
-##-a always,exit -F arch=b64 -S execve -F comm=perl -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Scripting
-##-a always,exit -F arch=b64 -S execve -F comm=bash -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Scripting
+## Monitor write/attribute access to common web upload directories
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/var/www/html/uploads/        -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protocols
+## Uncomment if Apache HTTP Server is installed
+##-a always,exit -F arch=b64 -S write,pwrite,truncate,ftruncate,creat,chmod,fchmod,chown,fchown,lchown,utime,utimes,futimesat -F dir=/usr/share/nginx/html/uploads/ -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Web_Protols
+## Uncomment if Nginx is installed
+
+## Monitor execution of scripting languages commonly used for exfiltration (python, perl, bash)
 ## Covered by OS Credential Dumping
 
-##  Monitor Use of Email Clients for Data Exfiltration
--a always,exit -F arch=b64 -S execve -F comm=sendmail -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
--a always,exit -F arch=b64 -S execve -F comm=mail -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
--a always,exit -F arch=b64 -S execve -F comm=mutt -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
--a always,exit -F arch=b64 -S execve -F comm=alpine -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
--a always,exit -F arch=b64 -S execve -F comm=thunderbird -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
+## Monitor execution of email clients and utilities for potential exfiltration
+-a always,exit -F arch=b64 -S execve -F path=/usr/sbin/sendmail  -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/mail      -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/mutt      -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/alpine    -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/thunderbird -F auid>=1000 -F auid!=4294967295 -k T1567_Email_Exfiltration
 
 
 #############################################
@@ -58,7 +68,7 @@
 ##   Ref: https://attack.mitre.org/techniques/T1567/001/
 
 ## Monitor execution of Git and code repository tools
--a always,exit -F arch=b64 -S execve -F comm=git -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
--a always,exit -F arch=b64 -S execve -F comm=gh -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
--a always,exit -F arch=b64 -S execve -F comm=git-lfs -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
--a always,exit -F arch=b64 -S execve -F comm=bzr -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/git     -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/gh      -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/git-lfs -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/bzr     -F auid>=1000 -F auid!=4294967295 -k T1567_Exfiltration_Code_Repositories

@@ -18,80 +18,110 @@
 ## T1003 - OS Credential Dumping: Adversaries may attempt to dump credentials to obtain account login information, which can be used to access systems, services, and data.
 
 ## Monitor execution of gcore (used to generate core dumps)
--a always,exit -F path=/usr/bin/gcore -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/gcore -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor execution of gdb (GNU Debugger)
--a always,exit -F path=/usr/bin/gdb -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/gdb -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor execution of dd (used to copy and convert files)
--a always,exit -F path=/bin/dd -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/bin/dd -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor execution of strings (used to extract printable strings from binary files)
--a always,exit -F path=/usr/bin/strings -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/strings -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor execution of cat (used to read and display the contents of files)
--a always,exit -F path=/bin/cat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/bin/cat -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of grep (used to search through files for specific patterns)
--a always,exit -F path=/bin/grep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/bin/grep -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of awk (used to parse and manipulate files, potentially including those containing sensitive credentials)
--a always,exit -F path=/usr/bin/awk -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/awk -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of cut (used to extract specific fields from files, possibly including those related to credential storage)
--a always,exit -F path=/usr/bin/cut -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/cut -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of sed (a powerful text editor that can be used to search and manipulate files, including those that may contain credentials)
--a always,exit -F path=/usr/bin/sed -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/sed -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of sort (used to organize data in files, potentially including sorting through log or configuration files that might contain sensitive information)
--a always,exit -F path=/usr/bin/sort -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/sort -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of uniq (used to remove duplicate lines from files, possibly as part of refining a list of extracted credentials)
--a always,exit -F path=/usr/bin/uniq -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/uniq -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of head (used to display the first few lines of a file, potentially for quickly inspecting files that might contain credentials at the top)
--a always,exit -F path=/usr/bin/head -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/head -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of tail (used to display the last few lines of a file, similar to head but for recent entries, relevant in inspecting log entries or file modifications related to credential access)
--a always,exit -F path=/usr/bin/tail -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/tail -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of less (a pagination command used to view large texts one screen at a time, potentially for browsing through system logs or configuration files without obvious traces)
--a always,exit -F path=/usr/bin/less -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/less -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of more (similar to less, used for viewing large texts one screen at a time, which could be used by an attacker to browse through sensitive information without direct editing or modification traces)
--a always,exit -F path=/usr/bin/more -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/more -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Be wary of a log storm and adapt the filter if necessary
 
 ## Monitor execution of unshadow (combines /etc/passwd and /etc/shadow files)
--a always,exit -F path=/usr/bin/unshadow -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/unshadow -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor execution of john (John the Ripper, a password cracking tool)
--a always,exit -F path=/usr/bin/john -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/john -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## This is easily evaded, malware scanning tools are recommended
 
 ## Monitor execution of hashcat (a powerful password cracking tool)
--a always,exit -F path=/usr/bin/hashcat -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/hashcat -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## This is easily evaded, malware scanning tools are recommended
 
 ## Monitor execution of volatility (a memory forensics tool)
--a always,exit -F path=/usr/bin/volatility -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## Ref: https://github.com/volatilityfoundation/volatility3/
+-a always,exit -F arch=b64 -S execve -F exe=/usr/local/bin/vol -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## This is easily evaded if installed to a different path
+
+## Monitoring python will capture executions, but it must be filtered in post-processing for vol execution:
+##   https://github.com/linux-audit/audit-kernel/blob/a1101fe1a9890a2e7fef9c6895a61e0a1a0a807c/fs/exec.c#L1957
+## Although auditd attempts to filter execve calls on command-line parameters with -F args=, it is important to understand that the filter works on a single concatenated string of the arguments.
+## This means that exact string matching is required, and there is no way to filter on individual arguments. This severely limits the usefulness of this filter.
+## Invalid: -a always,exit -F arch=b64 -S execve -F exe=/usr/bin/python3.9 -F args="vol" -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
 
 ## Monitor access to sensitive credential files
--a always,exit -F path=/etc/passwd -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
--a always,exit -F path=/etc/shadow -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
-## Monitor access to /var/db/shadow/hash/* (contains hashed passwords for user accounts)
-## This rule helps detect potential credential dumping activities by monitoring read access to hashed password files.
--a always,exit -F path=/var/db/shadow/hash/ -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
-## Monitor access to /private/etc/master.passwd (contains hashed passwords for user accounts)
-## This rule helps detect potential credential dumping activities by monitoring read access to the master password file.
--a always,exit -F path=/private/etc/master.passwd -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/passwd -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/shadow -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## auditd does not permit monitoring for reads on /var/db/shadow/hash/* (contains hashed passwords for user accounts) because it is a directory with a wildcard
+## Monitoring for reads on passwd and shadow is generally considered to be sufficient
 
 ## Monitor access to memory and process-related files
--a always,exit -F path=/proc/mem -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
--a always,exit -F path=/proc/*/maps -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
--a always,exit -F path=/proc/*/mem -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## It is not possible to audit reads on /proc/*/maps and /proc/*/mem
+## Instead audit use of ptrace for code injection. This might be malicious or benign debugging activity
+-a always,exit -F arch=b64 -S ptrace -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
+## Options:
+## -F a0 refers to the first argument (a0) passed to the ptrace system call.
+-a always,exit -F arch=b64 -S ptrace -F a0=0x4 -k code_injection -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## 0x4 is the hexadecimal representation of the PTRACE_PEEKTEXT constant.
+## PTRACE_PEEKTEXT is a ptrace request that allows a process to read data from the memory of another process.
+-a always,exit -F arch=b64 -S ptrace -F a0=0x5 -k data_injection -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## 0x5 is the hexadecimal representation of the PTRACE_POKETEXT constant.
+## PTRACE_POKETEXT is a ptrace request that allows a process to write data to the memory of another process.
+-a always,exit -F arch=b64 -S ptrace -F a0=0x6 -k register_injection -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+## 0x6 is the hexadecimal representation of the PTRACE_SETREGS constant.
+## PTRACE_SETREGS is a ptrace request that allows a process to modify the registers of another process.
 
 ## Monitor access to authentication and security logs
--a always,exit -F path=/var/log/auth.log -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
--a always,exit -F path=/var/log/secure -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+-a always,exit -F arch=b64 -F path=/var/log/secure -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1003_OS_Credential_Dumping
+
 
 #############################################
 ## https://attack.mitre.org/techniques/T1552/
@@ -111,49 +141,55 @@
 ## or source code/binary files containing embedded passwords.
 
 ## Monitor execution of various string search tools
--a always,exit -F path=/usr/bin/grep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
--a always,exit -F path=/usr/bin/egrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
--a always,exit -F path=/usr/bin/ugrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/grep     -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/egrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ugrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+## Be wary of a log storm, adapt filters as necessary to exclude whitelisted behavior
 
 ## Monitor execution of bgrep
--a always,exit -F path=/usr/bin/bgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/bgrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of ripgrep
--a always,exit -F path=/usr/bin/rg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/rg       -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of cgrep
--a always,exit -F path=/usr/bin/cgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/cgrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of ngrep
--a always,exit -F path=/usr/bin/ngrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ngrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of vgrep
--a always,exit -F path=/usr/bin/vgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/vgrep    -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of the_platinum_searcher
--a always,exit -F path=/usr/bin/pt -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/pt       -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of ucg
--a always,exit -F path=/usr/bin/ucg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ucg      -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of the_silver_searcher
--a always,exit -F path=/usr/bin/ag -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ag       -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of ack
--a always,exit -F path=/usr/bin/ack -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
--a always,exit -F path=/usr/local/bin/ack -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ack      -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/local/bin/ack -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Monitor execution of semgrep
--a always,exit -F path=/usr/bin/semgrep -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
-
-## Monitor read access to GPG private keys
--a always,exit -F dir=/home/ -F dir=.gnupg/ -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
-
-## Monitor write access to GPG configuration files
--a always,exit -F dir=/home/ -F dir=.gnupg/ -F perm=w -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/semgrep  -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
 
 ## Track the execution of GPG-related commands to detect unauthorized use.
--a always,exit -F path=/usr/bin/gpg -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/gpg      -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+
+## Monitor access to VPN-related certificates and credentials
+
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/openvpn/easy-rsa/pki/     -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+## Uncomment if easy-rsa is installed, in combination with OpenVPN
+
+##-a always,exit -F arch=b64 -S open,access,read -F path=/etc/ipsec.secrets            -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/ipsec.d/certs/            -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+##-a always,exit -F arch=b64 -S open,access,read -F dir=/etc/ipsec.d/private/          -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+##-a always,exit -F arch=b64 -S open,access,read -F path=/etc/strongswan/ipsec.secrets -F auid>=1000 -F auid!=4294967295 -k T1552_Credentials_In_Files
+## Uncomment if Strongswan is installed
 
 
 #############################################
@@ -177,7 +213,11 @@
 ## -F auid!=79: Excludes the _spotlight user.
 ## -F auid!=248: Excludes the _mbsetupuser user.
 ## -F auid!=501: Excludes the common service accounts (adjust as needed).
--a always,exit -F dir=/ -F name=.bash_history -F perm=r -F auid>=1000 -F auid!=4294967295 -F auid!=0 -F auid!=1 -F auid!=2 -F auid!=65534 -F auid!=79 -F auid!=248 -F auid!=501 -k T1552_Bash_History
+
+## auditd doesn't support wildcards in the path field like /home/*/.bash_history. This is because auditd needs to resolve the paths at the time the rule is loaded, and wildcards would require constant re-evaluation, which isn't how it's designed to work.
+## One possibility is to periodically iterate through all /home directories and generate the auditd rules, but it is not very practical
+## At the minimum, it is recommended to add rules for known specific application accounts:
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/.bash_history     -F auid>=1000 -F auid!=4294967295 -k T1552_Bash_History
 
 
 #############################################
@@ -185,20 +225,26 @@
 ## Unsecured Credentials: Private Keys
 
 ## Monitor Access to Common Private Key Files
--a always,exit -F path=/etc/ssh/ssh_host_rsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
--a always,exit -F path=/etc/ssh/ssh_host_dsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
--a always,exit -F path=/etc/ssh/ssh_host_ecdsa_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
--a always,exit -F path=/etc/ssh/ssh_host_ed25519_key -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/ssh/ssh_host_rsa_key     -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/ssh/ssh_host_dsa_key     -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/ssh/ssh_host_ecdsa_key   -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/etc/ssh/ssh_host_ed25519_key -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
 
 ## Monitor Access to User SSH Keys
--a always,exit -F dir=/home/ -F name=.ssh -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
--a always,exit -F dir=/root/.ssh -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/root/.ssh -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+-a always,exit -F arch=b64 -S open,access,read -F path=/root/.ssh/known_hosts -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+## At the minimum, it is recommended to add rules for known specific application accounts:
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/.ssh/*.pub       -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/.ssh/id_rsa* -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/.ssh/known_hosts -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
 
 ## Monitor Access to Common Private Key File Extensions
--a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.key -k T1552_Private_Keys
--a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.pem -k T1552_Private_Keys
--a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.p12 -k T1552_Private_Keys
--a always,exit -F path=/ -F perm=r -F auid>=1000 -F auid!=4294967295 -F key=*.pfx -k T1552_Private_Keys
+## At the minimum, it is recommended to add rules for known specific application accounts:
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/*.key -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/*.pem -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/*.p12 -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+##-a always,exit -F arch=b64 -S open,access,read -F path=/home/user1/*.pfx -F auid>=1000 -F auid!=4294967295 -k T1552_Private_Keys
+
 
 #############################################
 ## https://attack.mitre.org/techniques/T1552/007/
@@ -211,16 +257,22 @@
 ## may also use the Kubernetes API to retrieve credentials from the Kubernetes API server. These credentials may include
 ## those needed for Docker API authentication or secrets from Kubernetes cluster components.
 
+## Uncomment rules if installed so that named directories can be monitored
+
 ## Monitor Access to Docker API
--a always,exit -F path=/var/run/docker.sock -F perm=rw -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
--a always,exit -F path=/etc/docker/daemon.json -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -F path=/var/run/docker.sock -F perm=rw -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/etc/docker/daemon.json            -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
 
 ## Monitor Access to Kubernetes API
--a always,exit -F path=/etc/kubernetes/admin.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
--a always,exit -F path=/etc/kubernetes/kubelet.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
--a always,exit -F path=/etc/kubernetes/controller-manager.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
--a always,exit -F path=/etc/kubernetes/scheduler.conf -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+## All files (broad)
+##-a always,exit -F arch=b64 -F dir=/etc/kubernetes/ -F perm=rw -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+## or specifically those possibly storing credentials:
+## Monitor read/write access to Kubernetes configuration files
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/etc/kubernetes/admin.conf            -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/etc/kubernetes/kubelet.conf          -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/etc/kubernetes/controller-manager.conf -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/etc/kubernetes/scheduler.conf        -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
 
-## Monitor Access to Kubernetes Secrets
--a always,exit -F path=/var/lib/kubelet/pki/* -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
--a always,exit -F path=/var/lib/kubelet/config.yaml -F perm=r -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+## Monitor read/write access to Kubernetes secrets
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/var/lib/kubelet/pki/* -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API
+##-a always,exit -F arch=b64 -S open,access,read,write,truncate,append -F path=/var/lib/kubelet/config.yaml        -F auid>=1000 -F auid!=4294967295 -k T1552_Container_API

@@ -28,75 +28,60 @@
 ## also execute commands through interactive terminals/shells, as well as utilize various Remote Services in order to achieve remote Execution.
 
 ## Monitor for remote shells that may used to run bash commands
--a always,exit -F arch=b64 -F exe=/bin/bash -F success=1 -S connect -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F arch=b64 -F exe=/usr/bin/bash -F success=1 -S connect -k T1059_Command_and_Scripting_Interpreter
+## -a always,exit -F arch=b64 -S connect -F success=1 -F auid>=1000 -F auid!=4294967295 -k T1059_Network_Connection
+## Do not do this, instead use an IDS to monitor network connections
 
 ## Monitor execution of various command interpreters and scripting shells
--a always,exit -F path=/bin/ash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/bash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/bash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/busybox -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/csh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/csh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/dash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/dash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/fish -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/fish -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/ginsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/ksh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/ksh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/rbash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/rbash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/sash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/sh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/sh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/tclsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/tcsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/tcsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/wish -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/wish -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/xonsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/xdg-open -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/xdg-user-dir -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/local/bin/xonsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/yash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/yash -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/zsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/usr/bin/zsh -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/ash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/bash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/bash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/busybox -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/csh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/csh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/dash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/dash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/fish -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/fish -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/ginsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/ksh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/ksh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/rbash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/rbash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/sash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/sh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/sh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/tclsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/tcsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/tcsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F exe=/bin/wish -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/wish -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/xonsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/xdg-open -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/xdg-user-dir -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/local/bin/xonsh -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/bin/yash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/yash -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
 
 ## Monitor execution of Python (interpreted language used for scripting and automation)
--a always,exit -F path=/usr/bin/python -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/usr/bin/python2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/usr/bin/python3 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+## Use:
+##   realpath /usr/bin/python
+## to determine the actual binary for python, because execve and path do not audit symbollic link execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/python    -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/python* -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/python2   -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/python3   -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/python3.9 -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
 
 ## Monitor execution of Perl (interpreted language used for scripting and automation)
--a always,exit -F path=/usr/bin/perl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/perl -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
 
-## Monitor Execution of Ruby (Interpreted Language Used for Scripting and Automation)
--a always,exit -F path=/usr/bin/ruby -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+## Monitor execution of Ruby (interpreted language used for scripting and automation)
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/ruby -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
 
-## Monitor execution of Python and Perl from alternative paths
--a always,exit -F path=/bin/python -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/python2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/python3 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/perl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F path=/bin/ruby -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
+## Monitor execution of vim (text editor with command execution capabilities)
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/vim  -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F path=/bin/vim     -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
 
-## Monitor execution of Python and Perl from user directories (indicating potential persistence mechanisms)
--a always,exit -F dir=/home/ -F name=python -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F dir=/home/ -F name=python2 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F dir=/home/ -F name=python3 -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F dir=/home/ -F name=perl -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F dir=/home/ -F name=ruby -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
-
-## Monitor execution of Python and Perl scripts from /tmp and /var/tmp (often used for temporary execution)
--a always,exit -F dir=/tmp/ -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
--a always,exit -F dir=/var/tmp/ -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_Execution
-
-## Monitor Execution of vim (Text Editor with Command Execution Capabilities)
--a always,exit -F path=/usr/bin/vim -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/vim -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
-
-## Monitor Execution of vi (Text Editor with Command Execution Capabilities)
--a always,exit -F path=/usr/bin/vi -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
--a always,exit -F path=/bin/vi -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+## Monitor execution of vi (text editor with command execution capabilities)
+-a always,exit -F arch=b64 -S execve -F path=/usr/bin/vi   -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
+-a always,exit -F arch=b64 -S execve -F path=/bin/vi      -F auid>=1000 -F auid!=4294967295 -k T1059_Command_and_Scripting_Interpreter
