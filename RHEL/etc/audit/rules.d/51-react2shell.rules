@@ -1,6 +1,35 @@
-## Custom rules for React2Shell /tmp/ IOCs
-# Monitor creations/writes in /tmp/ (narrow to write permissions)
+## Custom Audit Rules for React2Shell /tmp/ IOC Detection
+## These rules enhance detection of suspicious activity in /tmp/ related to the React2Shell exploit
+## Add to /etc/audit/rules.d/ (e.g., react2shell.rules) and reload with 'auditctl -R' or reboot
+
+# Primary rule: Monitor file creation and write operations in /tmp/ directory
+# - Tracks creat, openat, open, and truncate syscalls with write permissions
+# - Filters to non-system users (auid >= 1000, excludes unset auid)
+# - Key: react2shell_tmp_activity (use for searching/alerting)
 -a always,exit -F arch=b64 -S creat,openat,open,truncate -F dir=/tmp/ -F perm=w -F auid>=1000 -F auid!=4294967295 -k react2shell_tmp_activity
 
-# Optional: Specific POC file if patterns known
+# Optional: Specific monitoring for known POC file (/tmp/pwned.txt)
+# - Triggers only on creation of the exact file used in proof-of-concept
+# - Narrow scope reduces noise if this filename is consistently observed
+# - Note: The second variant omits the auid!=4294967295 filter (slightly broader)
 -a always,exit -F arch=b64 -S creat -F path=/tmp/pwned.txt -F auid>=1000 -F auid!=4294967295 -k react2shell_poc_file
+-a always,exit -F arch=b64 -S creat -F path=/tmp/pwned.txt -F auid>=1000 -k react2shell_poc_file
+
+# Monitor execution of files located in /tmp/
+# - Watches execve calls for files in /tmp/ with execute permissions
+# - Helps detect staging or persistence attempts using temporary executables
+# - Key: react2shell_tmp_exec
+-a always,exit -F arch=b64 -S execve -F dir=/tmp/ -F perm=x -F auid>=1000 -k react2shell_tmp_exec
+
+# Tag child processes spawned by Node.js
+# - Monitors execve where the executable is /usr/bin/node
+# - Useful for correlating child processes back to vulnerable Node.js parent
+# - In SIEM, correlate using ppid to link to potential exploit chain
+# - Adjust path if Node.js binary is located elsewhere (e.g., /usr/local/bin/node)
+-a always,exit -F arch=b64 -S execve -F exe=/usr/bin/node -F auid>=1000 -k react2shell_node_child
+
+## Recommendations:
+## - Start with the primary tmp_activity rule and monitor log volume
+## - Add more specific rules (e.g., pwned.txt) only if baseline is acceptable
+## - Exclude known legitimate processes via -F exe!=/path/to/benign if needed
+## - Keys beginning with 'react2shell_' make filtering and alerting straightforward
