@@ -1,0 +1,6 @@
+## Custom rules for React2Shell /tmp/ IOCs
+# Monitor creations/writes in /tmp/ (narrow to write permissions)
+-a always,exit -F arch=b64 -S creat,openat,open,truncate -F dir=/tmp/ -F perm=w -F auid>=1000 -F auid!=4294967295 -k react2shell_tmp_activity
+
+# Optional: Specific POC file if patterns known
+-a always,exit -F arch=b64 -S creat -F path=/tmp/pwned.txt -F auid>=1000 -F auid!=4294967295 -k react2shell_poc_file
