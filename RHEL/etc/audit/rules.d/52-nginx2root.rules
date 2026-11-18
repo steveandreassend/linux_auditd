@@ -1,0 +1,39 @@
+## Custom Audit Rules for nginx2root IOC Detection
+
+## NGINX has been found to have multiple critical vulnerabilities that allow unauthenticated remote code execution.
+## These vulnerabilities can be exploited to gain control of the NGINX worker processes, leading to potential system compromise,
+## and subsequent privilege escalation to root through a related CVE.
+
+## ref: https://xint.io/blog/nginx2root-remote-code-execution
+
+## NGINX Vulnerabilities:
+## CVE-2026-123007
+## CVE-2026-123634
+## CVE-2026-123633
+## CVE-2026-121810
+## CVE-2026-113425
+
+## NGINX workers should not execute external programs under normal conditions. Any execution by the worker process
+## could indicate an attack. The following steps use Auditd to monitor for unauthorized command execution by NGINX workers.
+
+## Add to /etc/audit/rules.d/52-nginx2root.rules and reload with 'auditctl -R' or reboot. Check the new rule has been loaded.
+
+## Step 1: Identify the NGINX Worker UID
+## First, determine the UID running the NGINX worker processes:
+
+## ps -eo uid,user,pid,ppid,args | grep 'nginx: worker process'
+
+## Step 2: Configure Auditd Rules
+## Create an Auditd rule to monitor for execve and execveat calls made by the NGINX worker UID:
+## Replace NGINX_UID with the numeric UID from the previous output and add the following rule
+
+-a always,exit -F arch=b64 -S execve,execveat -F euid=NGINX_UID -k nginx_worker_exec
+
+## Step 3: Review Audit Logs
+## NB: The rule records executions only after it is installed. An empty result cannot rule out an earlier compromise.
+## It also matches other processes using the same UID, so check the process and parent process IDs to establish whether an event came from nginx.
+
+## Search records in the SIEM, but if only local logs are available, review the records with:
+## sudo ausearch -k nginx_worker_exec -ts recent -i
+
+## Look for entries where /bin/sh, /bin/bash, or other external programs are executed. Verify the parent process IDs to ensure the activity is related to NGINX.

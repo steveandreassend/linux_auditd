@@ -153,6 +153,8 @@ The following rules files exist in this repo:
 41-lotl.rules - rules to track LOTL techniques commonly used by threat actors
 42-activity.rules - OPTIONAL rules to track all user activity
 50-server-specific.rules.example - OPTIONAL rules to track access to installed applications
+51-react2shell.rules - rules for react2shell (CVE-2025-55182)
+52-nginx2root.rules - rules for nginx2root ( CVE-2026-123007, CVE-2026-123634, CVE-2026-123633, CVE-2026-121810, CVE-2026-113425)
 70-system_local.rules - monitor home dirs, local cron job configs, local firewall configs, sensitive files, local scripts.
 71-MAC_policy.rules - tracking attempts to modify Mandatory Access Controls
 72-maintenance.rules - monitor all privileged maintenance activities
