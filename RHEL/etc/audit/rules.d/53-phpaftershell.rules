@@ -1,0 +1,160 @@
+## Custom Audit Rules for CVE-2026-126714 phpaftershell IOC Detection
+
+## ref: https://depthfirst.com/research/phpaftershell
+
+## Detection rules for PHP session-file corruption / deserialization RCE where
+## attacker-controlled code executes in an Apache httpd worker.
+##
+## Target platform: RHEL-family systems using:
+##   - Apache service account: apache ## the rules below need to be adapted if another user account is configured
+##   - Apache binary: /usr/sbin/httpd
+##   - PHP session directory: /var/lib/php/session
+##
+## IMPORTANT
+##
+## 1. Confirm the effective PHP session path before deployment:
+##      php -i | grep '^session.save_path'
+##      grep -R '^[[:space:]]*session.save_path' /etc/php.ini /etc/php.d 2>/dev/null
+##
+## 2. If PHP uses /var/lib/php/sessions, /tmp, or another directory, replace
+##    /var/lib/php/session/ in every applicable rule. Do not watch all of /tmp
+##    on a busy server unless unavoidable.
+##
+## 3. These rules detect host activity and post-exploitation behavior. They do
+##    not prove exploitation from one event. Correlate session writes/truncation,
+##    worker death or OOM, reopening of the same sess_* file, Apache child
+##    execution, and unusual outbound connections.
+##
+## 4. Test with augenrules --check before loading. Unsupported syscalls on older
+##    kernels should be removed rather than allowing the complete ruleset to fail.
+##
+## 5. Do not enable immutable mode (-e 2) until testing is complete.
+
+## ---------------------------------------------------------------------------
+## PHP session directory changes
+## ---------------------------------------------------------------------------
+## Broad, low-complexity coverage of writes and attribute changes. The watch
+## records the affected sess_* path and is useful even when syscall rules differ
+## between kernel versions.
+-w /var/lib/php/session/ -p wa -k php_session_change
+
+## Record successful writes and truncations by the Apache effective identity.
+## pwrite64 and ftruncate are particularly relevant to retained-tail session
+## corruption. write/writev cover alternative PHP and filesystem code paths.
+-a always,exit -F arch=b64 -S write,writev,pwrite64,truncate,ftruncate -F euid=apache -F dir=/var/lib/php/session/ -F success=1 -k php_session_write
+-a always,exit -F arch=b32 -S write,writev,pwrite64,truncate,ftruncate -F euid=apache -F dir=/var/lib/php/session/ -F success=1 -k php_session_write
+
+## Record creation, opening, removal, and renaming of PHP session files.
+-a always,exit -F arch=b64 -S open,openat,creat,unlink,unlinkat,rename,renameat -F euid=apache -F dir=/var/lib/php/session/ -F success=1 -k php_session_lifecycle
+-a always,exit -F arch=b32 -S open,openat,creat,unlink,unlinkat,rename,renameat -F euid=apache -F dir=/var/lib/php/session/ -F success=1 -k php_session_lifecycle
+
+## ---------------------------------------------------------------------------
+## Process execution from an Apache worker
+## ---------------------------------------------------------------------------
+## On a conventional mod_php/httpd deployment, an Apache worker should not
+## normally execute shells, interpreters, downloaders, or administration tools.
+## Alert on every successful exec by the Apache effective identity, then enrich
+## the event using exe=, comm=, proctitle=, cwd=, and PATH records.
+-a always,exit -F arch=b64 -S execve,execveat -F euid=apache -F success=1 -k apache_exec
+-a always,exit -F arch=b32 -S execve,execveat -F euid=apache -F success=1 -k apache_exec
+
+## High-priority executables include:
+##   /bin/sh, /bin/bash, /usr/bin/dash, /usr/bin/curl, /usr/bin/wget,
+##   /usr/bin/nc, /usr/bin/ncat, /usr/bin/socat, /usr/bin/python3,
+##   /usr/bin/perl, /usr/bin/php, /usr/bin/base64, /usr/bin/openssl,
+##   /usr/bin/ssh, /usr/bin/chmod, /usr/bin/chown, and /usr/bin/systemctl.
+## Keep the generic exec rules above: hard-coded tool lists are easily bypassed.
+
+## ---------------------------------------------------------------------------
+## Outbound network activity from the Apache identity
+## ---------------------------------------------------------------------------
+## connect() provides the strongest signal for reverse shells, callbacks, and
+## payload retrieval. socket() adds context but may be noisy. Start with connect;
+## enable the socket rules only if event volume is acceptable.
+-a always,exit -F arch=b64 -S connect -F euid=apache -F success=1 -k apache_network
+-a always,exit -F arch=b32 -S connect -F euid=apache -F success=1 -k apache_network
+# -a always,exit -F arch=b64 -S socket -F euid=apache -F success=1 -k apache_socket
+# -a always,exit -F arch=b32 -S socket -F euid=apache -F success=1 -k apache_socket
+
+## auditd records the syscall and socket address data, but it is not a complete
+## flow sensor. Correlate with nftables, firewalld, Suricata, Zeek, Falco,
+## Tetragon, or the installed EDR for destination IP, port, DNS, and process tree.
+
+## ---------------------------------------------------------------------------
+## Worker disruption and attempts to manipulate processes
+## ---------------------------------------------------------------------------
+## Signals sent by the Apache identity can indicate exploit orchestration or
+## post-exploitation process control. Kernel/cgroup OOM kills do not necessarily
+## originate from kill(), so also ingest the kernel journal.
+-a always,exit -F arch=b64 -S kill,tkill,tgkill -F euid=apache -k apache_signal
+-a always,exit -F arch=b32 -S kill,tkill,tgkill -F euid=apache -k apache_signal
+
+## Correlate with:
+##   journalctl -k --grep='oom-kill|Out of memory|Memory cgroup out of memory|Killed process'
+## Also monitor httpd worker exits, connection resets, worker respawning, and
+## cgroup memory.current approaching memory.max.
+
+## ---------------------------------------------------------------------------
+## Post-exploitation file and persistence activity
+## ---------------------------------------------------------------------------
+
+## These rules are in addition to the base rules.d for LOTL detection.
+
+-w /etc/php.ini -p wa -k php_config_change
+-w /etc/php.d/ -p wa -k php_config_change
+
+## Permission and ownership changes performed by the Apache identity.
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat,chown,fchown,fchownat,lchown -F euid=apache -k apache_permission_change
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat,chown,fchown,fchownat,lchown -F euid=apache -k apache_permission_change
+
+## Credential-changing syscalls from an Apache worker are critical.
+-a always,exit -F arch=b64 -S setuid,setgid,setreuid,setregid,setresuid,setresgid -F euid=apache -k apache_credential_change
+-a always,exit -F arch=b32 -S setuid,setgid,setreuid,setregid,setresuid,setresgid -F euid=apache -k apache_credential_change
+
+## ---------------------------------------------------------------------------
+## Deployment and validation guidance
+## ---------------------------------------------------------------------------
+## Install:
+##   install -o root -g root -m 0600 53-php-session-rce.rules \
+##     /etc/audit/rules.d/53-php-session-rce.rules
+##
+## Validate and load:
+##   augenrules --check
+##   augenrules --load
+##   auditctl -l
+##   auditctl -s
+##
+## Confirm each key is producing events:
+##   ausearch -k php_session_change -ts recent -i
+##   ausearch -k php_session_write -ts recent -i
+##   ausearch -k php_session_lifecycle -ts recent -i
+##   ausearch -k apache_exec -ts recent -i
+##   ausearch -k apache_network -ts recent -i
+##   ausearch -k apache_signal -ts recent -i
+##
+## Monitor auditctl -s for lost events and backlog pressure. If lost is nonzero,
+## the resulting telemetry is incomplete. Size the audit backlog and dispatcher
+## configuration for measured peak load rather than relying on a fixed default.
+##
+## Suggested SIEM correlation window: 30 seconds on the same host/session.
+## Raise HIGH when:
+##   1. php_session_write records pwrite64 or ftruncate against sess_*, AND
+##   2. httpd or php is killed, OOM-killed, or unexpectedly respawned, AND
+##   3. the same session is reopened, followed by apache_exec, apache_network,
+##      a write outside approved application data paths, or a credential change.
+##
+## Raise CRITICAL immediately for apache_exec involving a shell, interpreter,
+## downloader, privilege tool, or unexpected binary, even if the preceding
+## session-corruption sequence is unavailable.
+##
+## Complementary prevention:
+##   - Apply the corrected PHP package.
+##   - Disable session.upload_progress.enabled when it is not required.
+##   - Use a dedicated, root-managed PHP session directory instead of /tmp.
+##   - Restrict Apache egress with nftables/firewalld or a host firewall policy.
+##   - Keep SELinux enforcing and investigate AVC denials rather than disabling it.
+##
+## Optional immutable mode, only after validation and change-control approval:
+##   Add '-e 2' as the final rule in the complete audit policy, not necessarily
+##   in this component file. Changing audit rules will then normally require a
+##   reboot.
